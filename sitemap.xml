@@ -3,7 +3,18 @@
   
   <url>
     <loc>https://elegenthus.github.io/</loc>
+    <lastmod>2016-06-29T00:30:57+08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://elegenthus.github.io/2016/06/29/second/</loc>
+    <lastmod>2016-06-29T00:30:57+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://elegenthus.github.io/2016/06/29/first/</loc>
+    <lastmod>2016-06-29T00:15:42+08:00</lastmod>
   </url>
   
 </urlset>
