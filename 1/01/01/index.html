@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.15" />
+
+
+<title> - Elegenthus&#39;s Blog</title>
+<meta property="og:title" content=" - Elegenthus&#39;s Blog">
+
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://elegenthus.github.io/css/main.css" media="all">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Merriweather:400|Lato:400,400italic,700">
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="https://elegenthus.github.io/" class="nav-logo"><img src="https://elegenthus.github.io/images/logo.png" width="50" height="50"></a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/Elegenthus">GitHub</a></li>
+    
+    <li><a href="https://twitter.com">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">1 min read</span>
+    
+
+    <h1 class="article-title"></h1>
+
+    
+    <span class="article-date">January 1, 0001</span>
+    
+
+    <div class="article-content">
+      
+
+<h2 id="这是个人的一点小笔记-记录在学习vue的过程中解决的的一些小需求:555d5f03252d19ecf1a541db14f70083">这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求</h2>
+
+<p>###在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件中进行渲染
+假设我们请求的第一个API是一个包含多个对象的数组，其中每一个对象包含如下评论信息
+<pre><code>
+    { &ldquo;body&rdquo;: &ldquo;比较轻松，期末小组做ppt&rdquo;,
+    &ldquo;liked&rdquo;: false,
+    &ldquo;user_name&rdquo;: &ldquo;学而2016&rdquo;,
+     &ldquo;id&rdquo;: 1244,
+     &ldquo;likes&rdquo;: 0 }
+</code></pre>
+我们将从这个API中获取每一个对象的body信息并将其显示在页面上
+1.首先，我们创建一个part1.vue，这是第一个子组件的页面，在每一个vue组件的页面中，应该有template标签，里面包含页面上显示的内容，有style标签，控制页面的具体样式，有script标签，包含我们对页面上内容的操作。由于我们此次请求信息返回的是一个数组对象，所以我决定在数组中将其以列表的形式展示出来，在template中代码如下
+<pre><code>
+    <template>
+    <ul id="app1">
+      <li v-for = "item in list" >
+       {{ item.body }}
+      </li>
+    </ul>
+  </template>
+</code></pre></p>
+
+<p>对了，还没有解释，其中的item是我为返回的数组取的名字，这一步是在在script标签中进行的
+<pre><code>
+    <script>
+    export default {
+        data (){
+        return {
+        list:[]
+        }
+    }
+    }
+    </script>
+</code></pre>
+关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&lsquo;sass&rsquo;属性
+2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&rdquo;user_name&rdquo;和&rdquo;id&rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，template中的代码如下
+<pre><code>
+    <template>
+  <div>
+    <div>
+      {{ obj.user_name }}
+    </div>
+    <div>
+      {{ obj.id }}
+    </div>
+  </div>
+</template>
+</code></pre>
+3.好了，接下来就是我们的重头戏父组件了，parent.vue
+首先上代码
+<pre><code>
+<template>
+    <div>
+      <div v-show="isLoading">
+        加载中
+      </div>
+      <courseInfo ref="courseInfo"></courseInfo>
+      <courseComment ref="comment"></courseComment>
+    </div>
+</template></p>
+
+<p><script>
+  import part1 from &lsquo;./part1&rsquo;//把子组件和fecth方法import进来
+  import part2 from &lsquo;./part2&rsquo;
+  import &lsquo;whatwg-fetch&rsquo;;</p>
+
+<p>export default {
+    data() {
+      return {
+        isLoading:true
+      }
+    },
+    mounted () {
+        let promise1 = fetch(&ldquo;请求的API的相对路径&rdquo;).then( (res) =&gt; {
+        return res.json()
+      })
+      let promise2 = fetch(&ldquo;请求的API的相对路径&rdquo;)
+      .then( (res) =&gt; {
+        return res.json()
+      })
+      Promise.all([promise1, promise2]).then( values =&gt; {
+        console.log(this.$refs.courseInfo.obj)
+        this.$refs.courseInfo.list= values[1]
+        this.$refs.comment.obj = values[0]
+        this.isLoading = false
+      })
+    },
+    components:{
+      &ldquo;courseInfo&rdquo;:part1,
+      &ldquo;courseComment&rdquo;:part2
+    }
+  }
+  </script>
+</code></pre>
+由于我们这里还会使用fetch方法请求API所以还要先npm装一下fetch（如果只是在最新版的chrome中就不必如此），具体方法见<a href="https://github.com/github/fetch">fetch</a>
+data里面我们定义了一个isloding的值，是为了在浏览器还没有请求到数据之前先显示一个加载中的文字or信息提示一下，这个提示页面会一直存在直到所有的信息请求完毕，然后我们把isloading的值改为false转而显示页面应该显示的信息
+然后开始请求API，由于返回的是数据流，所以用res.json()把它转换成对象，用promise.all方法对相应的对象进行赋值操作，这里使用了v-ref子组件指定一个索引 ID，这样可以直接访问子组件，详见<a href="https://vuejs.org.cn/guide/components.html">vue组件</a>
+最后不要忘记了在component中注册一下子组件哦，这样才能在相应的template中用标签形式引入。</p>
+
+    </div>
+  </article>
+
+  
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="https://Elegenthus.github.io/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="https://elegenthus.github.io/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+
