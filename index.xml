@@ -15,95 +15,89 @@
       <pubDate>Sat, 22 Oct 2016 17:17:19 +0800</pubDate>
       
       <guid>https://elegenthus.github.io/2016/10/22/vuetest/</guid>
-      <description>
+      <description>&lt;p&gt;这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求&lt;/p&gt;
 
-&lt;h2 id=&#34;这是个人的一点小笔记-记录在学习vue的过程中解决的的一些小需求:cb2082e147ce31d9fbf0987e7dc6d287&#34;&gt;这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求&lt;/h2&gt;
+&lt;hr /&gt;
 
-&lt;p&gt;###在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件中进行渲染&lt;br&gt;
-假设我们请求的第一个API是一个包含多个对象的数组，其中每一个对象包含如下评论信息
-&lt;pre&gt;&lt;code&gt;
-    { &amp;ldquo;body&amp;rdquo;: &amp;ldquo;比较轻松，期末小组做ppt&amp;rdquo;,
-    &amp;ldquo;liked&amp;rdquo;: false,
-    &amp;ldquo;user_name&amp;rdquo;: &amp;ldquo;学而2016&amp;rdquo;,
-     &amp;ldquo;id&amp;rdquo;: 1244,
-     &amp;ldquo;likes&amp;rdquo;: 0 }
+&lt;p&gt;目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件中进行渲染&lt;br&gt;&lt;br&gt;
+假设我们请求的第一个API是一个包含多个对象的数组，其中每一个对象包含如下评论信息&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    { &amp;quot;body&amp;quot;: &amp;quot;比较轻松，期末小组做ppt&amp;quot;, 
+	&amp;quot;liked&amp;quot;: false, 
+	&amp;quot;user_name&amp;quot;: &amp;quot;学而2016&amp;quot;,
+	 &amp;quot;id&amp;quot;: 1244, 
+	 &amp;quot;likes&amp;quot;: 0 }
 &lt;/code&gt;&lt;/pre&gt;
-我们将从这个API中获取每一个对象的body信息并将其显示在页面上&lt;br&gt;
-1.首先，我们创建一个part1.vue，这是第一个子组件的页面，在每一个vue组件的页面中，应该有template标签，里面包含页面上显示的内容，有style标签，控制页面的具体样式，有script标签，包含我们对页面上内容的操作。由于我们此次请求信息返回的是一个数组对象，所以我决定在数组中将其以列表的形式展示出来，在template中代码如下
-&lt;pre&gt;&lt;code&gt;
-    ```
-    &lt;template&gt;
-    &lt;ul id=&#34;app1&#34;&gt;
-      &lt;li v-for = &#34;item in list&#34; &gt;
+
+&lt;p&gt;我们将从这个API中获取每一个对象的body信息并将其显示在页面上&lt;br&gt;
+1.首先，我们创建一个part1.vue，这是第一个子组件的页面，在每一个vue组件的页面中，应该有template标签，里面包含页面上显示的内容，有style标签，控制页面的具体样式，有script标签，包含我们对页面上内容的操作。由于我们此次请求信息返回的是一个数组对象，所以我决定在数组中将其以列表的形式展示出来，在template中代码如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+    &amp;lt;ul id=&amp;quot;app1&amp;quot;&amp;gt;
+      &amp;lt;li v-for = &amp;quot;item in list&amp;quot; &amp;gt;
        {{ item.body }}
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/template&gt;&lt;/p&gt;
+      &amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+  &amp;lt;/template&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;pre&gt;&lt;code&gt;  &amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
+&lt;p&gt;对了，还没有解释，其中的item是我为返回的数组取的名字，这一步是在在script标签中进行的&lt;/p&gt;
 
-对了，还没有解释，其中的item是我为返回的数组取的名字，这一步是在在script标签中进行的
-&amp;lt;pre&amp;gt;&amp;lt;code&amp;gt;
-	```
-	&amp;lt;script&amp;gt;
-  	export default {
-  		data (){
+&lt;pre&gt;&lt;code&gt;&amp;lt;script&amp;gt;
+export default {
+  	data (){
     	return {
-    	list:[]
+    	   list:[]
     	}
  	}
-	}
-  	&amp;lt;/script&amp;gt;
-  	```
-  	&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
-关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&#39;sass&#39;属性&amp;lt;br&amp;gt;
-2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&amp;quot;user_name&amp;quot;和&amp;quot;id&amp;quot;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，template中的代码如下
-&amp;lt;pre&amp;gt;&amp;lt;code&amp;gt;
+}
+&amp;lt;/script&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;template&gt;
-  &lt;div&gt;
-    &lt;div&gt;
+&lt;p&gt;关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&amp;lsquo;sass&amp;rsquo;属性&lt;br&gt;
+2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&amp;rdquo;user_name&amp;rdquo;和&amp;rdquo;id&amp;rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，template中的代码如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+    &amp;lt;div&amp;gt;
       {{ obj.user_name }}
-    &lt;/div&gt;
-    &lt;div&gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;div&amp;gt;
       {{ obj.id }}
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;&amp;lt;/code&amp;gt;&amp;lt;/pre&amp;gt;
-3.好了，接下来就是我们的重头戏父组件了，parent.vue &amp;lt;br&amp;gt;
-首先上代码
-&amp;lt;pre&amp;gt;&amp;lt;code&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;template&gt;
-    &lt;div&gt;
-      &lt;div v-show=&#34;isLoading&#34;&gt;
+&lt;p&gt;3.好了，接下来就是我们的重头戏父组件了，parent.vue &lt;br&gt;
+首先上代码&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+    &amp;lt;div&amp;gt;
+      &amp;lt;div v-show=&amp;quot;isLoading&amp;quot;&amp;gt;
         加载中
-      &lt;/div&gt;
-      &lt;courseInfo ref=&#34;courseInfo&#34;&gt;&lt;/courseInfo&gt;
-      &lt;courseComment ref=&#34;comment&#34;&gt;&lt;/courseComment&gt;
-    &lt;/div&gt;
-&lt;/template&gt;&lt;/p&gt;
+      &amp;lt;/div&amp;gt;
+      &amp;lt;courseInfo ref=&amp;quot;courseInfo&amp;quot;&amp;gt;&amp;lt;/courseInfo&amp;gt;
+      &amp;lt;courseComment ref=&amp;quot;comment&amp;quot;&amp;gt;&amp;lt;/courseComment&amp;gt;
+    &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
 
-&lt;p&gt;&lt;script&gt;
-  import part1 from &amp;lsquo;./part1&amp;rsquo;//把子组件和fecth方法import进来
-  import part2 from &amp;lsquo;./part2&amp;rsquo;
-  import &amp;lsquo;whatwg-fetch&amp;rsquo;;&lt;/p&gt;
+&amp;lt;script&amp;gt;
+  import part1 from &#39;./part1&#39;//把子组件和fecth方法import进来
+  import part2 from &#39;./part2&#39;
+  import &#39;whatwg-fetch&#39;;
 
-&lt;p&gt;export default {
+  export default {
     data() {
       return {
         isLoading:true
       }
     },
-    mounted () {
-        let promise1 = fetch(&amp;ldquo;请求的API的相对路径&amp;rdquo;).then( (res) =&amp;gt; {
+  	mounted () {
+  		let promise1 = fetch(&amp;quot;请求的API的相对路径&amp;quot;).then( (res) =&amp;gt; {
         return res.json()
       })
-      let promise2 = fetch(&amp;ldquo;请求的API的相对路径&amp;rdquo;)
+      let promise2 = fetch(&amp;quot;请求的API的相对路径&amp;quot;)
       .then( (res) =&amp;gt; {
         return res.json()
       })
@@ -115,14 +109,14 @@
       })
     },
     components:{
-      &amp;ldquo;courseInfo&amp;rdquo;:part1,
-      &amp;ldquo;courseComment&amp;rdquo;:part2
+      &amp;quot;courseInfo&amp;quot;:part1,
+      &amp;quot;courseComment&amp;quot;:part2
     }
   }
-  &lt;/script&gt;
-  ```
+&amp;lt;/script&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-由于我们这里还会使用fetch方法请求API所以还要先npm装一下fetch（如果只是在最新版的chrome中就不必如此），具体方法见&lt;a href=&#34;https://github.com/github/fetch&#34;&gt;fetch&lt;/a&gt; &lt;br&gt;
+
+&lt;p&gt;由于我们这里还会使用fetch方法请求API所以还要先npm装一下fetch（如果只是在最新版的chrome中就不必如此），具体方法见&lt;a href=&#34;https://github.com/github/fetch&#34;&gt;fetch&lt;/a&gt; &lt;br&gt;
 data里面我们定义了一个isloding的值，是为了在浏览器还没有请求到数据之前先显示一个加载中的文字or信息提示一下，这个提示页面会一直存在直到所有的信息请求完毕，然后我们把isloading的值改为false转而显示页面应该显示的信息&lt;br&gt;
 然后开始请求API，由于返回的是数据流，所以用res.json() 把它转换成对象，用promise.all方法对相应的对象进行赋值操作，这里使用了v-ref子组件指定一个索引 ID，这样可以直接访问子组件，详见&lt;a href=&#34;https://vuejs.org.cn/guide/components.html&#34;&gt;vue组件&lt;/a&gt; &lt;br&gt;
 最后不要忘记了在component中注册一下子组件哦，这样才能在相应的template中用标签形式引入。&lt;br&gt;&lt;/p&gt;
