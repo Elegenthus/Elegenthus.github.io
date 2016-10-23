@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Elegenthus&#39;s Blog</title>
-    <link>https://Elegenthus.github.io/</link>
-    <description>Recent content on Elegenthus&#39;s Blog</description>
+    <title></title>
+    <link>/</link>
+    <description>Recent content on </description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
     <lastBuildDate>Sat, 22 Oct 2016 17:17:19 +0800</lastBuildDate>
-    <atom:link href="https://Elegenthus.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>vuetest</title>
-      <link>https://elegenthus.github.io/2016/10/22/vuetest/</link>
+      <link>/post/vuetest/</link>
       <pubDate>Sat, 22 Oct 2016 17:17:19 +0800</pubDate>
       
-      <guid>https://elegenthus.github.io/2016/10/22/vuetest/</guid>
+      <guid>/post/vuetest/</guid>
       <description>&lt;p&gt;这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求&lt;/p&gt;
 
 &lt;hr /&gt;
@@ -44,13 +43,13 @@
 &lt;p&gt;对了，还没有解释，其中的item是我为返回的数组取的名字，这一步是在在script标签中进行的&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;&amp;lt;script&amp;gt;
-export default {
-  	data (){
-    	return {
-    	   list:[]
-    	}
- 	}
-}
+  export default {
+    data() {
+      return {
+        list:[]
+      }
+    }
+  }
 &amp;lt;/script&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
