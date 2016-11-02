@@ -2,17 +2,17 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>vuetest - Elegenthus&#39;s blog</title>
+  <title>hackathon_Match(1) - Elegenthus&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
   
-  <meta name="description" content="这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求 目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件 假设我">
+  <meta name="description" content="上周末和团队的大大们一起去参加了武汉hackathon，真是一次难忘的体验啊~ 首先奉上我们组的产品Match，这是一款通过输入两个人的豆瓣、">
   <meta name="author" content="Elegenthus">
-  <meta itemprop="name" content="vuetest - Elegenthus&#39;s blog">
-  <meta itemprop="description" content="这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求 目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件 假设我">
+  <meta itemprop="name" content="hackathon_Match(1) - Elegenthus&#39;s blog">
+  <meta itemprop="description" content="上周末和团队的大大们一起去参加了武汉hackathon，真是一次难忘的体验啊~ 首先奉上我们组的产品Match，这是一款通过输入两个人的豆瓣、">
   <meta itemprop="image" content="https://elegenthus.github.io/img/author.jpg">
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="@Elegenthus" />
-  <meta name="twitter:title" content="vuetest - Elegenthus&#39;s blog" />
+  <meta name="twitter:title" content="hackathon_Match(1) - Elegenthus&#39;s blog" />
   
   <meta name="twitter:description" content="Hold your head up because you have every right to.">
   
@@ -63,7 +63,7 @@
 	<article itemprop="articleBody">
     <header class="article-info clearfix">
   <h1 itemprop="name">
-      <a href="https://elegenthus.github.io/post/vuetest/" title="vuetest" itemprop="url">vuetest</a>
+      <a href="https://elegenthus.github.io/post/hackathon_Match%281%29/" title="hackathon_Match(1)" itemprop="url">hackathon_Match(1)</a>
   </h1>
   <p class="article-author">By
     
@@ -71,121 +71,100 @@
     
   </p>
   <p class="article-time">
-    <time datetime="2016-10-22 17:17:19 &#43;0800 CST" itemprop="datePublished">2016年10月22日</time>
+    <time datetime="2016-11-02 17:07:33 &#43;0800 CST" itemprop="datePublished">2016年11月02日</time>
   </p>
 </header>
 
 	<div class="article-content">
     
-    <p>这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求</p>
+    <p>上周末和团队的大大们一起去参加了武汉hackathon，真是一次难忘的体验啊~</p>
 
 <hr />
 
-<p>目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件<br><br>
-假设我们请求的第一个API是一个包含多个对象的数组，其中每一个对象包含如下评论信息</p>
+<p>首先奉上我们组的产品<a href="http://match.muxixyz.com">Match</a>，这是一款通过输入两个人的豆瓣、网易云音乐、微博和知乎账号，寻找其共同项，最后输出一个匹配指数的产品，下面我将简单总结一下此次用到的一些前端技术。</p>
 
-<pre><code>  {    
-    &quot;id&quot;: 1244, 
-    &quot;likes&quot;: 0 ,
-    &quot;liked&quot;: false, 
-    &quot;user_name&quot;: &quot;学而2016&quot;,
-    &quot;body&quot;: &quot;比较轻松，期末小组做ppt&quot;
-  }
+<hr />
+
+<p>Match是一个使用vue-router实现页面切换效果的单页web应用，所以我们此次只有一个html页面</p>
+
+<pre><code>&lt;body&gt;
+    &lt;div id=&quot;app&quot;&gt;
+    &lt;/div&gt;
+    &lt;script src=&quot;/static/main.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
 </code></pre>
 
-<p>我们将从这个API中获取每一个对象的body信息并将其显示在页面上<br><br>
-1.首先，我们创建一个part1.vue，这是第一个子组件的页面，在每一个vue组件的页面中，应该有template标签，里面包含页面上显示的内容，有style标签，控制页面的具体样式，有script标签，包含我们对页面上内容的操作。由于我们此次请求信息返回的是一个数组对象，所以我决定在数组中将其以列表的形式展示出来，在template中代码如下</p>
+<p>重点是main.js部分，它作为入口文件，规定了路由的含义</p>
 
-<pre><code>&lt;template&gt;
-    &lt;ul id=&quot;app1&quot;&gt;
-      &lt;li v-for = &quot;item in list&quot; &gt;
-       {{ item.body }}
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/template&gt;
+<pre><code>import Vue from 'vue'
+import Index from './componnents/index'
+import Result from './componnents/result'
+import VueRouter from 'vue-router'
+import App from './componnents/app';
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  mode: 'history',
+  base: __dirname,
+  routes: [
+    { path: '/', component: Index },
+    { path: '/result', component: Result }
+  ]
+})
+
+new Vue({
+  router,
+  el: '#app',
+  render: h =&gt; h(App)
+})
 </code></pre>
 
-<p>对了，还没有解释，其中的item是我为返回的数组取的名字，这一步是在在script标签中进行的</p>
+<p>先是引入vue-router，然后调用构造器VueRouter定义了一个新的router，在routes中规定访问路径，并将路径path和组件component一一对应地映射起来，然后将其挂载到一个已经vue初始化好的#app元素上<br></p>
 
-<pre><code>&lt;script&gt;
-  export default {
-    data() {
-      return {
-        list:[]
-      }
+<p>我们这次的页面中设置了一个父组件，两个子组件<br>
+app.vue为此次的父组件，它这次的主要使命是渲染出背景，match的背景中的星空效果是参考<a href="http://codepen.io/CKH4/pen/vNyyaL">Random Pure CSS Parallax Stars</a> <br>
+可是如果将1000多行的css代码直接copy到组件的style标签中，会使该组件页面上的别的样式变得复杂难懂，于是我们在这里将该段css代码放到background.scss中，在用import标签引入。</p>
+
+<pre><code>@import &quot;../scss/background.scss&quot;;
+</code></pre>
+
+<p>在父组件中我们除了将vue创建的app放上去之外，不要忘记页面样式的reset哦~由于这次我们主要使用到的是input输入框和button，于是我们对它们的样式进行重置，部分代码如下</p>
+
+<pre><code>html, body{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: PingFang SC;
+}
+input{
+  border:0;
+  outline: none;
+  padding: 0;
+}
+button{
+  border:0;
+  padding:0;
+  box-sizing: content-box;
+  margin: 0;
+  background-color: transparent;
+  outline: none;
+}
+</code></pre>
+
+<p>然后不要忘记定义一个score对象来储存返回的数据</p>
+
+<pre><code>export default {
+  name: &quot;App&quot;,
+    data (){
+        return {
+            score:{}
     }
-  }
-&lt;/script&gt;
-</code></pre>
-
-<p>关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&lsquo;sass&rsquo;属性<br><br>
-2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&rdquo;user_name&rdquo;和&rdquo;id&rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，因为一个组件中只能有一个并行的div，template中的代码如下</p>
-
-<pre><code>&lt;template&gt;
-  &lt;div&gt;
-    &lt;div&gt;
-      {{ obj.user_name }}
-    &lt;/div&gt;
-    &lt;div&gt;
-      {{ obj.id }}
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-</code></pre>
-
-<p>3.好了，接下来就是我们的重头戏父组件了，parent.vue <br>
-首先上代码</p>
-
-<pre><code>&lt;template&gt;
-    &lt;div&gt;
-      &lt;div v-show=&quot;isLoading&quot;&gt;
-        加载中
-      &lt;/div&gt;
-      &lt;courseInfo ref=&quot;courseInfo&quot;&gt;&lt;/courseInfo&gt;
-      &lt;courseComment ref=&quot;comment&quot;&gt;&lt;/courseComment&gt;
-    &lt;/div&gt;
-&lt;/template&gt;
-
-&lt;script&gt;
-  import part1 from './part1'//把子组件和fecth方法import进来
-  import part2 from './part2'
-  import 'whatwg-fetch';
-
-  export default {
-    data() {
-      return {
-        isLoading:true
-      }
-    },
-  	mounted () {
-  		let promise1 = fetch(&quot;请求的API的相对路径&quot;).then( (res) =&gt; {
-        return res.json()
-      })
-      let promise2 = fetch(&quot;请求的API的相对路径&quot;)
-      .then( (res) =&gt; {
-        return res.json()
-      })
-      Promise.all([promise1, promise2]).then( values =&gt; {
-        //console.log(this.$refs.courseInfo.obj)
-        this.$refs.courseInfo.list= values[1]
-        this.$refs.comment.obj = values[0]
-        this.isLoading = false
-      })
-    },
-    components:{
-      &quot;courseInfo&quot;:part1,
-      &quot;courseComment&quot;:part2
     }
-  }
-&lt;/script&gt;
+}
 </code></pre>
 
-<p>接下来是几点要注意的地方： <br><br>
-a.由于我们这里还会使用fetch方法请求API所以还要先npm装一下fetch（如果只是在最新版的chrome中就不必如此），具体方法见<a href="https://github.com/github/fetch">fetch</a> <br><br>
-b.data里面我们定义了一个isloding的值，是为了在浏览器还没有请求到数据之前先显示一个加载中的文字or信息提示一下，这个提示页面会一直存在直到所有的信息请求完毕，然后我们把isloading的值改为false转而显示页面应该显示的信息<br><br>
-c.然后开始请求API，由于返回的是数据流，所以用res.json() 把它转换成对象，用promise.all方法对相应的对象进行赋值操作，这里使用了v-ref子组件指定一个索引 ID，这样可以直接访问子组件，详见<a href="https://vuejs.org.cn/guide/components.html">vue组件</a> <br><br>
-d.重点强调一下promise.all是等待其参数全部请求成功返回后才会进行下一步的操作，这就正好满足我们希望两个promise成功就拿掉loading页面转而显示请求到的信息这一要求，我们将会在promise.all后的then中将isloading的值改为false <br><br>
-e.最后不要忘记了在component中注册一下子组件哦，这样才能在相应的template中用标签形式引入。<br><br></p>
+<p>以上就是父组件的内容，下次我们将会对两个子组件index.vue和result.vue进行详细介绍</p>
 
 	</div>
   <footer class="article-footer clearfix">
@@ -194,7 +173,7 @@ e.最后不要忘记了在component中注册一下子组件哦，这样才能在
 
 
   <div class="article-share" id="share">
-    <div data-url="https://elegenthus.github.io/post/vuetest/" data-title="vuetest" data-tsina="13107391110" class="share clearfix">
+    <div data-url="https://elegenthus.github.io/post/hackathon_Match%281%29/" data-title="hackathon_Match(1)" data-tsina="13107391110" class="share clearfix">
     </div>
   </div>
 </footer>
@@ -210,8 +189,8 @@ e.最后不要忘记了在component中注册一下子组件哦，这样才能在
 
 
 var disqus_config = function () {
-this.page.url = "https://elegenthus.github.io/post/vuetest/";
-this.page.identifier = "https://elegenthus.github.io/post/vuetest/";
+this.page.url = "https://elegenthus.github.io/post/hackathon_Match%281%29/";
+this.page.identifier = "https://elegenthus.github.io/post/hackathon_Match%281%29/";
 };
 (function() { 
 var d = document, s = d.createElement('script');

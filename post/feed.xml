@@ -6,8 +6,105 @@
     <description>Recent content in Posts on Elegenthus&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 22 Oct 2016 17:17:19 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 02 Nov 2016 17:07:33 +0800</lastBuildDate>
     <atom:link href="https://Elegenthus.github.io/post/feed/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>hackathon_Match(1)</title>
+      <link>https://elegenthus.github.io/post/hackathon_Match%281%29/</link>
+      <pubDate>Wed, 02 Nov 2016 17:07:33 +0800</pubDate>
+      
+      <guid>https://elegenthus.github.io/post/hackathon_Match%281%29/</guid>
+      <description>&lt;p&gt;上周末和团队的大大们一起去参加了武汉hackathon，真是一次难忘的体验啊~&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;首先奉上我们组的产品&lt;a href=&#34;http://match.muxixyz.com&#34;&gt;Match&lt;/a&gt;，这是一款通过输入两个人的豆瓣、网易云音乐、微博和知乎账号，寻找其共同项，最后输出一个匹配指数的产品，下面我将简单总结一下此次用到的一些前端技术。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Match是一个使用vue-router实现页面切换效果的单页web应用，所以我们此次只有一个html页面&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    &amp;lt;div id=&amp;quot;app&amp;quot;&amp;gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;script src=&amp;quot;/static/main.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;重点是main.js部分，它作为入口文件，规定了路由的含义&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import Vue from &#39;vue&#39;
+import Index from &#39;./componnents/index&#39;
+import Result from &#39;./componnents/result&#39;
+import VueRouter from &#39;vue-router&#39;
+import App from &#39;./componnents/app&#39;;
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  mode: &#39;history&#39;,
+  base: __dirname,
+  routes: [
+    { path: &#39;/&#39;, component: Index },
+    { path: &#39;/result&#39;, component: Result }
+  ]
+})
+
+new Vue({
+  router,
+  el: &#39;#app&#39;,
+  render: h =&amp;gt; h(App)
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;先是引入vue-router，然后调用构造器VueRouter定义了一个新的router，在routes中规定访问路径，并将路径path和组件component一一对应地映射起来，然后将其挂载到一个已经vue初始化好的#app元素上&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;我们这次的页面中设置了一个父组件，两个子组件&lt;br&gt;
+app.vue为此次的父组件，它这次的主要使命是渲染出背景，match的背景中的星空效果是参考&lt;a href=&#34;http://codepen.io/CKH4/pen/vNyyaL&#34;&gt;Random Pure CSS Parallax Stars&lt;/a&gt; &lt;br&gt;
+可是如果将1000多行的css代码直接copy到组件的style标签中，会使该组件页面上的别的样式变得复杂难懂，于是我们在这里将该段css代码放到background.scss中，在用import标签引入。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@import &amp;quot;../scss/background.scss&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在父组件中我们除了将vue创建的app放上去之外，不要忘记页面样式的reset哦~由于这次我们主要使用到的是input输入框和button，于是我们对它们的样式进行重置，部分代码如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;html, body{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: PingFang SC;
+}
+input{
+  border:0;
+  outline: none;
+  padding: 0;
+}
+button{
+  border:0;
+  padding:0;
+  box-sizing: content-box;
+  margin: 0;
+  background-color: transparent;
+  outline: none;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后不要忘记定义一个score对象来储存返回的数据&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export default {
+  name: &amp;quot;App&amp;quot;,
+    data (){
+        return {
+            score:{}
+    }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;以上就是父组件的内容，下次我们将会对两个子组件index.vue和result.vue进行详细介绍&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>vuetest</title>
@@ -57,7 +154,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&amp;lsquo;sass&amp;rsquo;属性&lt;br&gt;&lt;br&gt;
-2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&amp;rdquo;user_name&amp;rdquo;和&amp;rdquo;id&amp;rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，template中的代码如下&lt;/p&gt;
+2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&amp;rdquo;user_name&amp;rdquo;和&amp;rdquo;id&amp;rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，因为一个组件中只能有一个并行的div，template中的代码如下&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
   &amp;lt;div&amp;gt;
