@@ -2,17 +2,17 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>vuetest - Elegenthus&#39;s blog</title>
+  <title>hackathon_Match(2) - Elegenthus&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
   
-  <meta name="description" content="这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求 目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件 假设我">
+  <meta name="description" content="接下来我们来一起看index.vue,先展示一下我们的成品页面 很漂亮对不对？ 第一个页面的具体样式我们这里不做赘述，我们怎么从第一个页面切换到">
   <meta name="author" content="Elegenthus">
-  <meta itemprop="name" content="vuetest - Elegenthus&#39;s blog">
-  <meta itemprop="description" content="这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求 目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件 假设我">
+  <meta itemprop="name" content="hackathon_Match(2) - Elegenthus&#39;s blog">
+  <meta itemprop="description" content="接下来我们来一起看index.vue,先展示一下我们的成品页面 很漂亮对不对？ 第一个页面的具体样式我们这里不做赘述，我们怎么从第一个页面切换到">
   <meta itemprop="image" content="https://elegenthus.github.io/img/author.jpg">
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="@Elegenthus" />
-  <meta name="twitter:title" content="vuetest - Elegenthus&#39;s blog" />
+  <meta name="twitter:title" content="hackathon_Match(2) - Elegenthus&#39;s blog" />
   
   <meta name="twitter:description" content="Hold your head up because you have every right to.">
   
@@ -63,7 +63,7 @@
 	<article itemprop="articleBody">
     <header class="article-info clearfix">
   <h1 itemprop="name">
-      <a href="https://elegenthus.github.io/post/vuetest/" title="vuetest" itemprop="url">vuetest</a>
+      <a href="https://elegenthus.github.io/post/hackathon_Match%282%29/" title="hackathon_Match(2)" itemprop="url">hackathon_Match(2)</a>
   </h1>
   <p class="article-author">By
     
@@ -71,121 +71,148 @@
     
   </p>
   <p class="article-time">
-    <time datetime="2016-10-22 17:17:19 &#43;0800 CST" itemprop="datePublished">2016年10月22日</time>
+    <time datetime="2016-11-02 18:46:18 &#43;0800 CST" itemprop="datePublished">2016年11月02日</time>
   </p>
 </header>
 
 	<div class="article-content">
     
-    <p>这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求</p>
+    <p>接下来我们来一起看index.vue,先展示一下我们的成品页面
+<img src="../../img/match1.png" alt="" />
+<img src="../../img/match2.png" alt="" />
+很漂亮对不对？<br>
+第一个页面的具体样式我们这里不做赘述，我们怎么从第一个页面切换到第二个页面呢？</p>
 
-<hr />
+<pre><code>&lt;div class=&quot;main item&quot; v-bind:class=&quot;{ mainNext : onNext}&quot; v-on:mousewheel=&quot;scrollNext&quot;&gt;
+    ...
+&lt;/div&gt;
+&lt;div class=&quot;input item&quot;  v-bind:class=&quot;{ inputNext : onNext}&quot;&gt;
+    ...
+&lt;/div&gt;
+</code></pre>
 
-<p>目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件<br><br>
-假设我们请求的第一个API是一个包含多个对象的数组，其中每一个对象包含如下评论信息</p>
+<p>第一个div main中装的是第一个页面的内容，第二个div input装的是第二个页面的内容,我们用v-bind绑定选择器，并设置一个状态值onNext,当onNext为true的时候便给两个div加上相应的class，我们可以利用这一性质设置animation点击产生滑动特效，代码如下：</p>
 
-<pre><code>  {    
-    &quot;id&quot;: 1244, 
-    &quot;likes&quot;: 0 ,
-    &quot;liked&quot;: false, 
-    &quot;user_name&quot;: &quot;学而2016&quot;,
-    &quot;body&quot;: &quot;比较轻松，期末小组做ppt&quot;
+<pre><code>.mainNext{
+    animation: main_leave 2s ease-in-out;
+    opacity: 0;
   }
-</code></pre>
-
-<p>我们将从这个API中获取每一个对象的body信息并将其显示在页面上<br><br>
-1.首先，我们创建一个part1.vue，这是第一个子组件的页面，在每一个vue组件的页面中，应该有template标签，里面包含页面上显示的内容，有style标签，控制页面的具体样式，有script标签，包含我们对页面上内容的操作。由于我们此次请求信息返回的是一个数组对象，所以我决定在数组中将其以列表的形式展示出来，在template中代码如下</p>
-
-<pre><code>&lt;template&gt;
-    &lt;ul id=&quot;app1&quot;&gt;
-      &lt;li v-for = &quot;item in list&quot; &gt;
-       {{ item.body }}
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/template&gt;
-</code></pre>
-
-<p>对了，还没有解释，其中的item是我为返回的数组取的名字，这一步是在在script标签中进行的</p>
-
-<pre><code>&lt;script&gt;
-  export default {
-    data() {
-      return {
-        list:[]
-      }
+  @keyframes main_leave {
+    from{
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to{
+        transform: translateY(-100%);
+        opacity: 0;
     }
   }
-&lt;/script&gt;
+  .inputNext{
+    animation: input_show 2s ease-in-out;
+    z-index: 3;
+    opacity: 1;
+  }
+  @keyframes input_show {
+    from{
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 </code></pre>
 
-<p>关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&lsquo;sass&rsquo;属性<br><br>
-2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&rdquo;user_name&rdquo;和&rdquo;id&rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，因为一个组件中只能有一个并行的div，template中的代码如下</p>
+<p>我们可以实现点击下翻按钮产生滑动特效，在放有下翻图标的div上使用v-on监听click事件，绑定next函数，将onNext改为true</p>
 
-<pre><code>&lt;template&gt;
-  &lt;div&gt;
-    &lt;div&gt;
-      {{ obj.user_name }}
-    &lt;/div&gt;
-    &lt;div&gt;
-      {{ obj.id }}
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+<pre><code>methods:{
+        next: function (event) {
+            this.onNext = true
+        }
+        ...
+    }
 </code></pre>
 
-<p>3.好了，接下来就是我们的重头戏父组件了，parent.vue <br>
-首先上代码</p>
+<p>若想实现滑动页面便能翻页的特效，就在main中监听mousewheel事件，若检测到用户滑动则触发scrollNext函数</p>
+
+<pre><code>scrollNext:function(e){
+      if (this.onNext) {
+        return
+      }
+      this.onNext = true
+    }
+</code></pre>
+
+<p>注意到我设置了一个if语句，判断onNext是否为true，若为否则将其设置为true，这是为了确保只会触发一次滑动事件
+<br>
+好的接下来我们通过滑动来到了第二个页面，关于第二个页面这次我新学到的一招是在父元素上设置text-align: justify;让其子元素水平居中，不过这一方法只能让处于非最后一行的子元素并列显示，因此我们还要在父元素中需居中的子元素后人为加上一个div</p>
+
+<pre><code>&lt;div class=&quot;text_align_fix&quot;&gt;&lt;/div&gt;
+.text_align_fix{
+      display: inline-block;
+      width: 100%;
+      height: 0;
+      overflow: hidden;
+    }
+</code></pre>
+
+<p>接下来我们来看每个输入框的数据如何传给后台，其实很简单，是使用vue的v-model绑定相应的数据，然后使用fetch发送post给后台,我们以网易云音乐的数据传送为例</p>
 
 <pre><code>&lt;template&gt;
-    &lt;div&gt;
-      &lt;div v-show=&quot;isLoading&quot;&gt;
-        加载中
-      &lt;/div&gt;
-      &lt;courseInfo ref=&quot;courseInfo&quot;&gt;&lt;/courseInfo&gt;
-      &lt;courseComment ref=&quot;comment&quot;&gt;&lt;/courseComment&gt;
-    &lt;/div&gt;
+    &lt;!-- 用v-model绑定数据 --&gt;
+    &lt;input type=&quot;text&quot; placeholder=&quot;你的ID&quot; v-model = &quot;wangyiId1&quot;&gt;
+    &lt;input type=&quot;text&quot; placeholder=&quot;TA的ID&quot; v-model = &quot;wangyiId2&quot;&gt;
+    ...
+    &lt;!-- 绑定 点击触发count函数事件 --&gt;
+    &lt;button class=&quot;button match_button&quot; v-on:click = &quot;count&quot;&gt;MATCH&lt;/button&gt;
+    ...
 &lt;/template&gt;
 
 &lt;script&gt;
-  import part1 from './part1'//把子组件和fecth方法import进来
-  import part2 from './part2'
-  import 'whatwg-fetch';
-
-  export default {
-    data() {
-      return {
-        isLoading:true
-      }
+import 'whatwg-fetch';
+export default {
+  name:&quot;index&quot;,
+    data (){
+        return {
+            onNext:false,  // 初始化设置产生滑动效果的状态位为false
+            isloading:false, //初始化页面加载效果的状态位为false（后文会提到）
+            wangyiId1: &quot;&quot;, //定义相对应的变量用于存储数据
+            wangyiId2: &quot;&quot;,
+        }
     },
-  	mounted () {
-  		let promise1 = fetch(&quot;请求的API的相对路径&quot;).then( (res) =&gt; {
-        return res.json()
-      })
-      let promise2 = fetch(&quot;请求的API的相对路径&quot;)
-      .then( (res) =&gt; {
-        return res.json()
-      })
-      Promise.all([promise1, promise2]).then( values =&gt; {
-        //console.log(this.$refs.courseInfo.obj)
-        this.$refs.courseInfo.list= values[1]
-        this.$refs.comment.obj = values[0]
-        this.isLoading = false
-      })
-    },
-    components:{
-      &quot;courseInfo&quot;:part1,
-      &quot;courseComment&quot;:part2
+    methods:{
+        next: function (event) {
+            this.onNext = true
+        },
+        count:function(event){
+            this.isloading = true
+      fetch('/getScore/', {     //发送post请求
+      method: 'POST',
+      headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+      body: JSON.stringify({
+            wangyiId1: this.wangyiId1,
+            wangyiId2: this.wangyiId2
+        })
+    })
+    .then( res =&gt; {
+      return res.json()
+    })
+    .then( json =&gt; {
+            this.$parent.score = json  //将返回的数据赋给app.vue中定义的score
+            this.$router.push(&quot;result&quot;)  //然后切换到result页面
+            })
+        }
     }
-  }
+}
 &lt;/script&gt;
 </code></pre>
 
-<p>接下来是几点要注意的地方： <br><br>
-a.由于我们这里还会使用fetch方法请求API所以还要先npm装一下fetch（如果只是在最新版的chrome中就不必如此），具体方法见<a href="https://github.com/github/fetch">fetch</a> <br><br>
-b.data里面我们定义了一个isloding的值，是为了在浏览器还没有请求到数据之前先显示一个加载中的文字or信息提示一下，这个提示页面会一直存在直到所有的信息请求完毕，然后我们把isloading的值改为false转而显示页面应该显示的信息<br><br>
-c.然后开始请求API，由于返回的是数据流，所以用res.json() 把它转换成对象，用promise.all方法对相应的对象进行赋值操作，这里使用了v-ref子组件指定一个索引 ID，这样可以直接访问子组件，详见<a href="https://vuejs.org.cn/guide/components.html">vue组件</a> <br><br>
-d.重点强调一下promise.all是等待其参数全部请求成功返回后才会进行下一步的操作，这就正好满足我们希望两个promise成功就拿掉loading页面转而显示请求到的信息这一要求，我们将会在promise.all后的then中将isloading的值改为false <br><br>
-e.最后不要忘记了在component中注册一下子组件哦，这样才能在相应的template中用标签形式引入。<br><br></p>
+<p>接下来我们就进入查看结果的页面啦，下一篇会详细介绍一下result.vue <br>
+ps:想知道button的hover效果是怎么实现的吗？可以戳<a href="http://codepen.io/nw/pen/GqBzJ">Flat &amp; Shiny Button (hover effect)</a>~</p>
 
 	</div>
   <footer class="article-footer clearfix">
@@ -194,7 +221,7 @@ e.最后不要忘记了在component中注册一下子组件哦，这样才能在
 
 
   <div class="article-share" id="share">
-    <div data-url="https://elegenthus.github.io/post/vuetest/" data-title="vuetest" data-tsina="13107391110" class="share clearfix">
+    <div data-url="https://elegenthus.github.io/post/hackathon_Match%282%29/" data-title="hackathon_Match(2)" data-tsina="13107391110" class="share clearfix">
     </div>
   </div>
 </footer>
@@ -210,8 +237,8 @@ e.最后不要忘记了在component中注册一下子组件哦，这样才能在
 
 
 var disqus_config = function () {
-this.page.url = "https://elegenthus.github.io/post/vuetest/";
-this.page.identifier = "https://elegenthus.github.io/post/vuetest/";
+this.page.url = "https://elegenthus.github.io/post/hackathon_Match%282%29/";
+this.page.identifier = "https://elegenthus.github.io/post/hackathon_Match%282%29/";
 };
 (function() { 
 var d = document, s = d.createElement('script');

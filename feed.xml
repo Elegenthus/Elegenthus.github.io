@@ -6,8 +6,153 @@
     <description>Recent content on Elegenthus&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 02 Nov 2016 17:07:33 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 02 Nov 2016 18:46:18 +0800</lastBuildDate>
     <atom:link href="https://Elegenthus.github.io/feed/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>hackathon_Match(2)</title>
+      <link>https://elegenthus.github.io/post/hackathon_Match%282%29/</link>
+      <pubDate>Wed, 02 Nov 2016 18:46:18 +0800</pubDate>
+      
+      <guid>https://elegenthus.github.io/post/hackathon_Match%282%29/</guid>
+      <description>&lt;p&gt;接下来我们来一起看index.vue,先展示一下我们的成品页面
+&lt;img src=&#34;../../img/match1.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;../../img/match2.png&#34; alt=&#34;&#34; /&gt;
+很漂亮对不对？&lt;br&gt;
+第一个页面的具体样式我们这里不做赘述，我们怎么从第一个页面切换到第二个页面呢？&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;main item&amp;quot; v-bind:class=&amp;quot;{ mainNext : onNext}&amp;quot; v-on:mousewheel=&amp;quot;scrollNext&amp;quot;&amp;gt;
+    ...
+&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;input item&amp;quot;  v-bind:class=&amp;quot;{ inputNext : onNext}&amp;quot;&amp;gt;
+    ...
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;第一个div main中装的是第一个页面的内容，第二个div input装的是第二个页面的内容,我们用v-bind绑定选择器，并设置一个状态值onNext,当onNext为true的时候便给两个div加上相应的class，我们可以利用这一性质设置animation点击产生滑动特效，代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;.mainNext{
+    animation: main_leave 2s ease-in-out;
+    opacity: 0;
+  }
+  @keyframes main_leave {
+    from{
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to{
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+  }
+  .inputNext{
+    animation: input_show 2s ease-in-out;
+    z-index: 3;
+    opacity: 1;
+  }
+  @keyframes input_show {
+    from{
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们可以实现点击下翻按钮产生滑动特效，在放有下翻图标的div上使用v-on监听click事件，绑定next函数，将onNext改为true&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;methods:{
+        next: function (event) {
+            this.onNext = true
+        }
+        ...
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;若想实现滑动页面便能翻页的特效，就在main中监听mousewheel事件，若检测到用户滑动则触发scrollNext函数&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;scrollNext:function(e){
+      if (this.onNext) {
+        return
+      }
+      this.onNext = true
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意到我设置了一个if语句，判断onNext是否为true，若为否则将其设置为true，这是为了确保只会触发一次滑动事件
+&lt;br&gt;
+好的接下来我们通过滑动来到了第二个页面，关于第二个页面这次我新学到的一招是在父元素上设置text-align: justify;让其子元素水平居中，不过这一方法只能让处于非最后一行的子元素并列显示，因此我们还要在父元素中需居中的子元素后人为加上一个div&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;text_align_fix&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+.text_align_fix{
+      display: inline-block;
+      width: 100%;
+      height: 0;
+      overflow: hidden;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来我们来看每个输入框的数据如何传给后台，其实很简单，是使用vue的v-model绑定相应的数据，然后使用fetch发送post给后台,我们以网易云音乐的数据传送为例&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+    &amp;lt;!-- 用v-model绑定数据 --&amp;gt;
+    &amp;lt;input type=&amp;quot;text&amp;quot; placeholder=&amp;quot;你的ID&amp;quot; v-model = &amp;quot;wangyiId1&amp;quot;&amp;gt;
+    &amp;lt;input type=&amp;quot;text&amp;quot; placeholder=&amp;quot;TA的ID&amp;quot; v-model = &amp;quot;wangyiId2&amp;quot;&amp;gt;
+    ...
+    &amp;lt;!-- 绑定 点击触发count函数事件 --&amp;gt;
+    &amp;lt;button class=&amp;quot;button match_button&amp;quot; v-on:click = &amp;quot;count&amp;quot;&amp;gt;MATCH&amp;lt;/button&amp;gt;
+    ...
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script&amp;gt;
+import &#39;whatwg-fetch&#39;;
+export default {
+  name:&amp;quot;index&amp;quot;,
+    data (){
+        return {
+            onNext:false,  // 初始化设置产生滑动效果的状态位为false
+            isloading:false, //初始化页面加载效果的状态位为false（后文会提到）
+            wangyiId1: &amp;quot;&amp;quot;, //定义相对应的变量用于存储数据
+            wangyiId2: &amp;quot;&amp;quot;,
+        }
+    },
+    methods:{
+        next: function (event) {
+            this.onNext = true
+        },
+        count:function(event){
+            this.isloading = true
+      fetch(&#39;/getScore/&#39;, {     //发送post请求
+      method: &#39;POST&#39;,
+      headers: {
+            &#39;Accept&#39;: &#39;application/json&#39;,
+            &#39;Content-Type&#39;: &#39;application/json&#39;
+        },
+      body: JSON.stringify({
+            wangyiId1: this.wangyiId1,
+            wangyiId2: this.wangyiId2
+        })
+    })
+    .then( res =&amp;gt; {
+      return res.json()
+    })
+    .then( json =&amp;gt; {
+            this.$parent.score = json  //将返回的数据赋给app.vue中定义的score
+            this.$router.push(&amp;quot;result&amp;quot;)  //然后切换到result页面
+            })
+        }
+    }
+}
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来我们就进入查看结果的页面啦，下一篇会详细介绍一下result.vue &lt;br&gt;
+ps:想知道button的hover效果是怎么实现的吗？可以戳&lt;a href=&#34;http://codepen.io/nw/pen/GqBzJ&#34;&gt;Flat &amp;amp; Shiny Button (hover effect)&lt;/a&gt;~&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>hackathon_Match(1)</title>
@@ -100,6 +245,11 @@ button{
     }
     }
 }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最后在app.vue的template中除了放背景的相关代码，还要使用&lt;router-view&gt;&lt;/router-view&gt;标签，它用于渲染匹配的组件。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;router-view&amp;gt;&amp;lt;/router-view&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;以上就是父组件的内容，下次我们将会对两个子组件index.vue和result.vue进行详细介绍&lt;/p&gt;
