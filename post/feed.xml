@@ -83,7 +83,11 @@ svg的viewBox顾名思义就是视区盒子的意思，它覆盖整个svg图，�
       <pubDate>Wed, 02 Nov 2016 18:46:18 +0800</pubDate>
       
       <guid>https://elegenthus.github.io/post/hackathon_Match%282%29/</guid>
-      <description>&lt;p&gt;接下来我们来一起看index.vue,先展示一下我们的成品页面
+      <description>&lt;p&gt;&lt;a href=&#34;https://match.muxixyz.com&#34;&gt;Match&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;接下来我们来一起看index.vue,先展示一下我们的成品页面
 &lt;img src=&#34;../../img/match1.png&#34; alt=&#34;&#34; /&gt;
 &lt;img src=&#34;../../img/match2.png&#34; alt=&#34;&#34; /&gt;
 很漂亮对不对？&lt;br&gt;
