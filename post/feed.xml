@@ -6,8 +6,76 @@
     <description>Recent content in Posts on Elegenthus&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 02 Nov 2016 18:46:18 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 03 Nov 2016 19:54:22 +0800</lastBuildDate>
     <atom:link href="https://Elegenthus.github.io/post/feed/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>hackathon_Match(3)</title>
+      <link>https://elegenthus.github.io/post/hackathon_Match%283%29/</link>
+      <pubDate>Thu, 03 Nov 2016 19:54:22 +0800</pubDate>
+      
+      <guid>https://elegenthus.github.io/post/hackathon_Match%283%29/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://match.muxixyz.com&#34;&gt;Match&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;恭喜你，来到了我们的result页面，我们很快就能看到我们的match分数啦~是不是很期待？&lt;br&gt;
+我们先来公布一份超级有爱的match结果~&lt;br&gt;
+&lt;img src=&#34;../../img/match3.png&#34; alt=&#34;&#34; /&gt;
+&lt;br&gt;
+大家可以看到我们的页面上有显示相对应应用中的共同项&lt;br&gt;
+这里我决定只显示有共同项的应用版块，这里采用的方法是在判断每一个版块上所返回的字符串是否为空，代码如下，若info.douban.book为空，则v-show=&amp;ldquo;false&amp;rdquo;，该板块就不会显示&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;common&amp;quot; v-show = &amp;quot;info.douban.book&amp;quot;&amp;gt;
+          &amp;lt;div class=&amp;quot;common_t&amp;quot;&amp;gt;共同看过的小说：&amp;lt;/div&amp;gt;
+          &amp;lt;div class=&amp;quot;common_t&amp;quot;&amp;gt;
+            {{info.douban.book}}
+          &amp;lt;/div&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;好的，接下来就是我们显示match指数的的百分比图了,动态效果请戳&lt;a href=&#34;https://jsbin.com/lafiqatocu/edit?html,css,output&#34;&gt;piechart&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+        ...
+    &amp;lt;svg viewBox = &amp;quot;0 0 32 32&amp;quot;&amp;gt;
+    &amp;lt;circle class=&amp;quot;circle&amp;quot; r = &amp;quot;16&amp;quot; cx = &amp;quot;16&amp;quot; cy =&amp;quot;16&amp;quot; v-bind:style = &amp;quot;{strokeDasharray:Math.floor(score) + &#39; 100&#39;}&amp;quot;&amp;gt;&amp;lt;/circle&amp;gt;
+    &amp;lt;/svg&amp;gt;
+        ...
+ &amp;lt;/template&amp;gt;
+
+&amp;lt;style&amp;gt;
+        ...
+      svg{
+        width: 100px;
+        height: 100px;
+        transform: rotate(-90deg);
+        border-radius: 50%;
+      }
+      .circle{
+        fill:transparent;
+        stroke:#e1484b;
+        stroke-width:6px;
+        animation: fillup 1s ease-out forwards; 
+      }
+      @keyframes fillup{
+        from{stroke-dasharray: 0 100;}
+      }
+        ...
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们将采用svg标签来画这个百分比图，用stroke属性来实现动态变化效果
+&lt;br&gt;
+svg的viewBox顾名思义就是视区盒子的意思，它覆盖整个svg图，我们在style中定义svg是一个半径为50px的圆，那么viewBox = &amp;ldquo;0 0 32 32&amp;rdquo;只是内部将此圆的半径长分为32份，而circle中的r代表此圆的半径，相对于viewBox而言的16，既是整个svg图的一半，cx，cy是其圆心坐标，处于svg图的正中心。&lt;br&gt;
+接下来看它的动态效果如何实现，这里我们仍然需要用&lt;a href=&#34;http://www.runoob.com/svg/svg-stroke.html&#34;&gt;svg的stroke&lt;/a&gt;属性，stroke会沿着svg图像（此处为一个半径为50的圆）的边界划出一条线，我们再用animation属性使其产生变化的效果。这样一个piechart就完成啦&lt;br&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;好啦，你还等什么，赶紧去寻找你和你的TA的相同点吧~&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>hackathon_Match(2)</title>

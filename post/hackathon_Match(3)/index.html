@@ -2,20 +2,20 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>404 Page not found - Elegenthus&#39;s blog</title>
+  <title>hackathon_Match(3) - Elegenthus&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
   
-  <meta name="description" content="404 Page not found">
+  <meta name="description" content="Match 恭喜你，来到了我们的result页面，我们很快就能看到我们的match分数啦~是不是很期待？ 我们先来公布一份超级有爱的match结果~ 大家">
   <meta name="author" content="Elegenthus">
-  <meta itemprop="name" content="404 Page not found - Elegenthus&#39;s blog">
-  <meta itemprop="description" content="404 Page not found">
+  <meta itemprop="name" content="hackathon_Match(3) - Elegenthus&#39;s blog">
+  <meta itemprop="description" content="Match 恭喜你，来到了我们的result页面，我们很快就能看到我们的match分数啦~是不是很期待？ 我们先来公布一份超级有爱的match结果~ 大家">
   <meta itemprop="image" content="https://elegenthus.github.io/img/author.jpg">
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:site" content="@Elegenthus" />
-  <meta name="twitter:title" content="404 Page not found - Elegenthus&#39;s blog" />
+  <meta name="twitter:title" content="hackathon_Match(3) - Elegenthus&#39;s blog" />
   
   <meta name="twitter:description" content="Hold your head up because you have every right to.">
-  <link rel="alternate" href="https://elegenthus.github.io/feed.xml" title="Elegenthus&#39;s blog" type="application/rss+xml"/>
+  
   <link rel="shortcut icon" href="https://elegenthus.github.io/img/favicon.ico"/>
   <link rel="apple-touch-icon" href="https://elegenthus.github.io/apple-touch-icon.png" />
   <link rel="apple-touch-icon-precomposed" href="https://elegenthus.github.io/apple-touch-icon.png" />
@@ -59,11 +59,124 @@
 
   </header>
   <div id="container">
-    <div id="main">
-      
-      你访问的页面不存在
-      
+    <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody">
+    <header class="article-info clearfix">
+  <h1 itemprop="name">
+      <a href="https://elegenthus.github.io/post/hackathon_Match%283%29/" title="hackathon_Match(3)" itemprop="url">hackathon_Match(3)</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="https://Elegenthus.github.io/" title="Elegenthus">Elegenthus</a>
+    
+  </p>
+  <p class="article-time">
+    <time datetime="2016-11-03 19:54:22 &#43;0800 CST" itemprop="datePublished">2016年11月03日</time>
+  </p>
+</header>
+
+	<div class="article-content">
+    
+    <p><a href="https://match.muxixyz.com">Match</a></p>
+
+<hr />
+
+<p>恭喜你，来到了我们的result页面，我们很快就能看到我们的match分数啦~是不是很期待？<br>
+我们先来公布一份超级有爱的match结果~<br>
+<img src="../../img/match3.png" alt="" />
+<br>
+大家可以看到我们的页面上有显示相对应应用中的共同项<br>
+这里我决定只显示有共同项的应用版块，这里采用的方法是在判断每一个版块上所返回的字符串是否为空，代码如下，若info.douban.book为空，则v-show=&ldquo;false&rdquo;，该板块就不会显示</p>
+
+<pre><code>&lt;div class=&quot;common&quot; v-show = &quot;info.douban.book&quot;&gt;
+          &lt;div class=&quot;common_t&quot;&gt;共同看过的小说：&lt;/div&gt;
+          &lt;div class=&quot;common_t&quot;&gt;
+            {{info.douban.book}}
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+</code></pre>
+
+<p>好的，接下来就是我们显示match指数的的百分比图了,动态效果请戳<a href="https://jsbin.com/lafiqatocu/edit?html,css,output">piechart</a></p>
+
+<pre><code>&lt;template&gt;
+        ...
+    &lt;svg viewBox = &quot;0 0 32 32&quot;&gt;
+    &lt;circle class=&quot;circle&quot; r = &quot;16&quot; cx = &quot;16&quot; cy =&quot;16&quot; v-bind:style = &quot;{strokeDasharray:Math.floor(score) + ' 100'}&quot;&gt;&lt;/circle&gt;
+    &lt;/svg&gt;
+        ...
+ &lt;/template&gt;
+
+&lt;style&gt;
+        ...
+      svg{
+        width: 100px;
+        height: 100px;
+        transform: rotate(-90deg);
+        border-radius: 50%;
+      }
+      .circle{
+        fill:transparent;
+        stroke:#e1484b;
+        stroke-width:6px;
+        animation: fillup 1s ease-out forwards; 
+      }
+      @keyframes fillup{
+        from{stroke-dasharray: 0 100;}
+      }
+        ...
+&lt;/style&gt;
+</code></pre>
+
+<p>我们将采用svg标签来画这个百分比图，用stroke属性来实现动态变化效果
+<br>
+svg的viewBox顾名思义就是视区盒子的意思，它覆盖整个svg图，我们在style中定义svg是一个半径为50px的圆，那么viewBox = &ldquo;0 0 32 32&rdquo;只是内部将此圆的半径长分为32份，而circle中的r代表此圆的半径，相对于viewBox而言的16，既是整个svg图的一半，cx，cy是其圆心坐标，处于svg图的正中心。<br>
+接下来看它的动态效果如何实现，这里我们仍然需要用<a href="http://www.runoob.com/svg/svg-stroke.html">svg的stroke</a>属性，stroke会沿着svg图像（此处为一个半径为50的圆）的边界划出一条线，我们再用animation属性使其产生变化的效果。这样一个piechart就完成啦<br></p>
+
+<hr />
+
+<p>好啦，你还等什么，赶紧去寻找你和你的TA的相同点吧~</p>
+
+	</div>
+  <footer class="article-footer clearfix">
+  
+
+
+
+  <div class="article-share" id="share">
+    <div data-url="https://elegenthus.github.io/post/hackathon_Match%283%29/" data-title="hackathon_Match(3)" data-tsina="13107391110" class="share clearfix">
     </div>
+  </div>
+</footer>
+
+	</article>
+  
+
+
+<section class="comment">
+<div id="disqus_thread"></div>
+</section>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = "https://elegenthus.github.io/post/hackathon_Match%283%29/";
+this.page.identifier = "https://elegenthus.github.io/post/hackathon_Match%283%29/";
+};
+(function() { 
+var d = document, s = d.createElement('script');
+
+s.src = '//Elegenthus.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+</div>
+
     <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
@@ -101,10 +214,6 @@
 
 
   
-<div class="rsspart">
-  <a rel="nofollow" href="https://elegenthus.github.io/feed.xml" type="application/rss+xml" target="_blank">RSS 订阅</a>
-</div>
-
 
 </aside>
 </div>
@@ -203,6 +312,38 @@ $(document).ready(function(){
 
 <script type="text/javascript">
 $(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
   var $this = $('.share'),
       url = $this.attr('data-url'),
       encodedUrl = encodeURIComponent(url),
@@ -229,6 +370,27 @@ $(document).ready(function(){
 });
 </script>
 
+
+<link rel="stylesheet" href="https://elegenthus.github.io/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="https://elegenthus.github.io/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
 
 
 <script>
