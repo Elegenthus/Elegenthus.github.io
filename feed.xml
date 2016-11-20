@@ -34,16 +34,17 @@ binding是一个包含了众多性质的对象，关于它的所有的性质的�
 接下来我们来看一个具体使用VueDirective封装dom的scroll事件的例子，在这个例子中我们想要在用户滑动到页面的底端时发请求，请求下一个页面。&lt;br&gt;
 1.首先我们需要一个包含dom操作的scroll.js &lt;br&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;export default {
-    bind: function(el, binding, vnode) {
-        window.addEventListener(&amp;quot;scroll&amp;quot;, scrollCallback.bind({}, binding.value))
-    },
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;kr&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;default&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;bind&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;el&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;binding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;vnode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;nb&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;addEventListener&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;quot;scroll&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;scrollCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;bind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;({},&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;binding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
 
-    unbind: function() {
-        window.removeEventListener(&amp;quot;scroll&amp;quot;, scrollCallback)
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
+    &lt;span class=&#34;nx&#34;&gt;unbind&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+        &lt;span class=&#34;nb&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;removeEventListener&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;quot;scroll&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;scrollCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;在这个scroll.js中我们需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，在解除绑定的时候也要将监听事件从window上移除，所以我们必须给回调函数取一个名字scrollCallback，在unbind函数中将监听移除。但是由于我们还希望滑动到页面底端再发请求，也就是说不能马上执行binding.value，怎样实现这一点呢？我们把scrollCallback函数的具体内容写在对象外面，将bind.value作为函数的参数传进scrollCallback，在满足条件时调用binding.value &lt;br&gt;
 2.在组件里import进这个directive &lt;br&gt;&lt;/p&gt;
@@ -54,7 +55,7 @@ binding是一个包含了众多性质的对象，关于它的所有的性质的�
 &lt;p&gt;使用import将directive引入组件 &lt;br&gt;
 3.在组件的directives中注册scroll&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;directives: {
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;directives: {
     scroll: scrollDirective
 },
 &lt;/code&gt;&lt;/pre&gt;
@@ -62,7 +63,7 @@ binding是一个包含了众多性质的对象，关于它的所有的性质的�
 &lt;p&gt;将引入的组件注册到scroll上 &lt;br&gt;
 4.在元素上加上directive指令&lt;br&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;v-scroll = &amp;quot;onScroll&amp;quot;
+&lt;pre&gt;&lt;code class=&#34;language-javascript&#34;&gt;v-scroll = &amp;quot;onScroll&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;用注册好的名字在相对应的元素上加入指令 &lt;br&gt;
