@@ -1,0 +1,403 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>VueDirectivesTest - Elegenthus&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+  
+  <meta name="description" content="使用VueDirective封装Dom操作 这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子 1.为什么要使用VueDi">
+  <meta name="author" content="Elegenthus">
+  <meta itemprop="name" content="VueDirectivesTest - Elegenthus&#39;s blog">
+  <meta itemprop="description" content="使用VueDirective封装Dom操作 这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子 1.为什么要使用VueDi">
+  <meta itemprop="image" content="https://elegenthus.github.io/img/author.jpg">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@Elegenthus" />
+  <meta name="twitter:title" content="VueDirectivesTest - Elegenthus&#39;s blog" />
+  
+  <meta name="twitter:description" content="Hold your head up because you have every right to.">
+  
+  <link rel="shortcut icon" href="https://elegenthus.github.io/img/favicon.ico"/>
+  <link rel="apple-touch-icon" href="https://elegenthus.github.io/apple-touch-icon.png" />
+  <link rel="apple-touch-icon-precomposed" href="https://elegenthus.github.io/apple-touch-icon.png" />
+  <link rel="stylesheet" href="https://elegenthus.github.io/highlight/styles/github.css">
+  <script src="https://elegenthus.github.io/highlight/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <link rel="stylesheet" href="https://elegenthus.github.io/font/hack/css/hack.min.css">
+  <link rel="stylesheet" href="https://elegenthus.github.io/css/style.css">
+</head>
+
+<body>
+  <header>
+    <div>
+  
+  <div id="imglogo">
+    <a href="https://elegenthus.github.io/"><img src="https://elegenthus.github.io/img/logo.svg" alt="Elegenthus&#39;s blog" title="Elegenthus&#39;s blog"/></a>
+  </div>
+  
+  <div id="textlogo">
+    <h1 class="site-name"><a href="https://elegenthus.github.io/" title="Elegenthus&#39;s blog">Elegenthus&#39;s blog</a></h1>
+    <h2 class="blog-motto">That&#39;s The Story Of Life.</h2>
+  </div>
+  <div class="navbar"><a class="navbutton navmobile" href="#" title="menu"></a></div>
+  <nav class="animated">
+    <ul>
+      
+      <li><a href="/">首页</a></li>
+      
+      <li><a href="/about/">关于</a></li>
+      
+      <li>
+        <form class="search" method="get" action="https://www.google.com/search">
+          <div>
+            <input type="text" id="search" name="q" placeholder="搜索">
+          </div>
+        </form>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+  </header>
+  <div id="container">
+    <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody">
+    <header class="article-info clearfix">
+  <h1 itemprop="name">
+      <a href="https://elegenthus.github.io/post/VueDirectivesTest/" title="VueDirectivesTest" itemprop="url">VueDirectivesTest</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="https://Elegenthus.github.io/" title="Elegenthus">Elegenthus</a>
+    
+  </p>
+  <p class="article-time">
+    <time datetime="2016-11-20 16:19:56 &#43;0800 CST" itemprop="datePublished">2016年11月20日</time>
+  </p>
+</header>
+
+	<div class="article-content">
+    
+    
+
+<h2 id="使用vuedirective封装dom操作:8fb70ceb80e0e159e41b00203ce25900">使用VueDirective封装Dom操作</h2>
+
+<p>这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子</p>
+
+<p><em>1.为什么要使用VueDirective</em> <br><br>
+Vue作为一个开发web的前端框架，以其轻量级和指令的丰富多样性而为大众所喜。然而，由于业务需求的不同，有时候我们也需要自己编写vue指令，在里面不可避免地会出现一些dom操作，为了实现View和ViewModel的分离，我们必须封装dom操作，于是我们需要VueDirective。 <br><br>
+<em>2.VueDirective的简介</em> <br><br>
+除了在相关组件中引入directive的指令之外，我们还需要在定义这个directive的操作，vue给我们提供了许多Hook Functions，以便于我们对directive的对象进行具体的操作。<br><br />
+例如bind，bind是只会在被绑定的对象节点被插入父节点时被调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。<br>
+bind函数中会提供像el,binding,vnode,oldVnode这样一些形参，这里我们具体看一下binding<br><br>
+binding是一个包含了众多性质的对象，关于它的所有的性质的介绍可以自行查看<a href="https://vuejs.org/v2/guide/custom-directive.html">官方文档</a> ,比较常用的一个属性binding.value，其对应的是在元素中被传给directive的值，vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则不会被解析执行<br>
+<br></p>
+
+<p><em>3.怎样使用VueDirective</em> <br><br>
+接下来我们来看一个具体使用VueDirective封装dom的scroll事件的例子，在这个例子中我们想要在用户滑动到页面的底端时发请求，请求下一个页面。<br>
+1.首先我们需要一个包含dom操作的scroll.js <br></p>
+
+<pre><code>export default {
+    bind: function(el, binding, vnode) {
+        window.addEventListener(&quot;scroll&quot;, scrollCallback.bind({}, binding.value))
+    },
+
+    unbind: function() {
+        window.removeEventListener(&quot;scroll&quot;, scrollCallback)
+    }
+}
+</code></pre>
+
+<p>在这个scroll.js中我们需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，在解除绑定的时候也要将监听事件从window上移除，所以我们必须给回调函数取一个名字scrollCallback，在unbind函数中将监听移除。但是由于我们还希望滑动到页面底端再发请求，也就是说不能马上执行binding.value，怎样实现这一点呢？我们把scrollCallback函数的具体内容写在对象外面，将bind.value作为函数的参数传进scrollCallback，在满足条件时调用binding.value <br>
+2.在组件里import进这个directive <br></p>
+
+<pre><code>import scrollDirective from '../../directives/scroll'
+</code></pre>
+
+<p>使用import将directive引入组件 <br>
+3.在组件的directives中注册scroll</p>
+
+<pre><code>directives: {
+    scroll: scrollDirective
+},
+</code></pre>
+
+<p>将引入的组件注册到scroll上 <br>
+4.在元素上加上directive指令<br></p>
+
+<pre><code>v-scroll = &quot;onScroll&quot;
+</code></pre>
+
+<p>用注册好的名字在相对应的元素上加入指令 <br>
+5.编写directive指令中的函数<br>
+最后在method中编写onScroll函数，也就是上文中对应的binding.value，vue会在滚动的时候执行相应指令 <br></p>
+
+	</div>
+  <footer class="article-footer clearfix">
+  
+
+
+
+  <div class="article-share" id="share">
+    <div data-url="https://elegenthus.github.io/post/VueDirectivesTest/" data-title="VueDirectivesTest" data-tsina="13107391110" class="share clearfix">
+    </div>
+  </div>
+</footer>
+
+	</article>
+  
+
+
+<section class="comment">
+<div id="disqus_thread"></div>
+</section>
+<script>
+
+
+var disqus_config = function () {
+this.page.url = "https://elegenthus.github.io/post/VueDirectivesTest/";
+this.page.identifier = "https://elegenthus.github.io/post/VueDirectivesTest/";
+};
+(function() { 
+var d = document, s = d.createElement('script');
+
+s.src = '//Elegenthus.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+</div>
+
+    <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+  
+
+
+
+  
+
+
+
+  
+  <div class="archiveslist">
+    <p class="asidetitle">归档</p>
+    <ul class="archive-list">
+      
+      
+      <li class="archive-list-item">
+        <a class="archive-list-link" href="https://elegenthus.github.io/post/#2016-11">2016年11月</a><span class="archive-list-count">4</span>
+      </li>
+      
+      
+      <li class="archive-list-item">
+        <a class="archive-list-link" href="https://elegenthus.github.io/post/#2016-10">2016年10月</a><span class="archive-list-count">1</span>
+      </li>
+      
+    </ul>
+
+  </div>
+
+
+  
+
+
+
+  
+
+</aside>
+</div>
+
+  </div>
+  <footer><div id="footer" >
+  
+  <div class="line">
+    <span></span>
+    <div style='background:no-repeat url("https://elegenthus.github.io/img/author.jpg") left top;-webkit-background-size:6.875em 6.875em;-moz-background-size:6.875em 6.875em;background-size:6.875em 6.875em;' class="author" ></div>
+  </div>
+  
+  
+  <section class="info">
+    <p> </p>
+  </section>
+  
+  <div class="social-font clearfix">
+    
+    <a href="http://weibo.com/5664914921" target="_blank" title="weibo"></a>
+    
+    
+    <a href="https://twitter.com/Elegenthus" target="_blank" title="twitter"></a>
+    
+    
+    <a href="https://github.com/Elegenthus" target="_blank" title="github"></a>
+    
+    
+    <a href="https://www.facebook.com/coderzh" target="_blank" title="facebook"></a>
+    
+    
+    <a href="https://www.linkedin.com/coderzh" target="_blank" title="linkedin"></a>
+    
+  </div>
+  <p class="copyright">Powered by <a href="http://gohugo.io" target="_blank" title="hugo">hugo</a> and Theme by <a href="https://github.com/coderzh/hugo-pacman-theme" target="_blank" title="hugo-pacman-theme">hugo-pacman-theme</a> © 2016
+    
+    <a href="https://elegenthus.github.io/" target="_blank" title="Elegenthus">Elegenthus</a>
+    
+  </p>
+</div>
+</footer>
+  <script src="https://elegenthus.github.io/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+done = false;
+$(document).ready(function(){
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize();
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  $('form.search').on('submit', function (event) {
+    if (false === done) {
+      event.preventDefault();
+      var orgVal = $(this).find('#search').val();
+      $(this).find('#search').val('site:https:\/\/elegenthus.github.io\/ ' + orgVal);
+      done = true;
+      $(this).submit();
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});
+</script>
+
+
+<link rel="stylesheet" href="https://elegenthus.github.io/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="https://elegenthus.github.io/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+});
+</script>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-10147768-2', 'auto');
+  ga('send', 'pageview');
+  $('#messagesbsb').remove();
+</script>
+
+
+
+</body>
+</html>

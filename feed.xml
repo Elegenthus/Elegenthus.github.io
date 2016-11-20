@@ -6,8 +6,70 @@
     <description>Recent content on Elegenthus&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 03 Nov 2016 19:54:22 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 20 Nov 2016 16:19:56 +0800</lastBuildDate>
     <atom:link href="https://Elegenthus.github.io/feed/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>VueDirectivesTest</title>
+      <link>https://elegenthus.github.io/post/VueDirectivesTest/</link>
+      <pubDate>Sun, 20 Nov 2016 16:19:56 +0800</pubDate>
+      
+      <guid>https://elegenthus.github.io/post/VueDirectivesTest/</guid>
+      <description>
+
+&lt;h2 id=&#34;使用vuedirective封装dom操作:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;使用VueDirective封装Dom操作&lt;/h2&gt;
+
+&lt;p&gt;这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;1.为什么要使用VueDirective&lt;/em&gt; &lt;br&gt;&lt;br&gt;
+Vue作为一个开发web的前端框架，以其轻量级和指令的丰富多样性而为大众所喜。然而，由于业务需求的不同，有时候我们也需要自己编写vue指令，在里面不可避免地会出现一些dom操作，为了实现View和ViewModel的分离，我们必须封装dom操作，于是我们需要VueDirective。 &lt;br&gt;&lt;br&gt;
+&lt;em&gt;2.VueDirective的简介&lt;/em&gt; &lt;br&gt;&lt;br&gt;
+除了在相关组件中引入directive的指令之外，我们还需要在定义这个directive的操作，vue给我们提供了许多Hook Functions，以便于我们对directive的对象进行具体的操作。&lt;br&gt;&lt;br /&gt;
+例如bind，bind是只会在被绑定的对象节点被插入父节点时被调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。&lt;br&gt;
+bind函数中会提供像el,binding,vnode,oldVnode这样一些形参，这里我们具体看一下binding&lt;br&gt;&lt;br&gt;
+binding是一个包含了众多性质的对象，关于它的所有的性质的介绍可以自行查看&lt;a href=&#34;https://vuejs.org/v2/guide/custom-directive.html&#34;&gt;官方文档&lt;/a&gt; ,比较常用的一个属性binding.value，其对应的是在元素中被传给directive的值，vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则不会被解析执行&lt;br&gt;
+&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;3.怎样使用VueDirective&lt;/em&gt; &lt;br&gt;&lt;br&gt;
+接下来我们来看一个具体使用VueDirective封装dom的scroll事件的例子，在这个例子中我们想要在用户滑动到页面的底端时发请求，请求下一个页面。&lt;br&gt;
+1.首先我们需要一个包含dom操作的scroll.js &lt;br&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export default {
+    bind: function(el, binding, vnode) {
+        window.addEventListener(&amp;quot;scroll&amp;quot;, scrollCallback.bind({}, binding.value))
+    },
+
+    unbind: function() {
+        window.removeEventListener(&amp;quot;scroll&amp;quot;, scrollCallback)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在这个scroll.js中我们需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，在解除绑定的时候也要将监听事件从window上移除，所以我们必须给回调函数取一个名字scrollCallback，在unbind函数中将监听移除。但是由于我们还希望滑动到页面底端再发请求，也就是说不能马上执行binding.value，怎样实现这一点呢？我们把scrollCallback函数的具体内容写在对象外面，将bind.value作为函数的参数传进scrollCallback，在满足条件时调用binding.value &lt;br&gt;
+2.在组件里import进这个directive &lt;br&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import scrollDirective from &#39;../../directives/scroll&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;使用import将directive引入组件 &lt;br&gt;
+3.在组件的directives中注册scroll&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;directives: {
+    scroll: scrollDirective
+},
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;将引入的组件注册到scroll上 &lt;br&gt;
+4.在元素上加上directive指令&lt;br&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;v-scroll = &amp;quot;onScroll&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;用注册好的名字在相对应的元素上加入指令 &lt;br&gt;
+5.编写directive指令中的函数&lt;br&gt;
+最后在method中编写onScroll函数，也就是上文中对应的binding.value，vue会在滚动的时候执行相应指令 &lt;br&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>hackathon_Match(3)</title>

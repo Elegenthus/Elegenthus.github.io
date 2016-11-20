@@ -1,34 +1,356 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on </title>
-    <link>/post/</link>
-    <description>Recent content in Posts on </description>
+    <title>Posts on Elegenthus&#39;s blog</title>
+    <link>https://Elegenthus.github.io/post/</link>
+    <description>Recent content in Posts on Elegenthus&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 22 Oct 2016 17:17:19 +0800</lastBuildDate>
-    <atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Thu, 03 Nov 2016 19:54:22 +0800</lastBuildDate>
+    <atom:link href="https://Elegenthus.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>hackathon_Match(3)</title>
+      <link>https://elegenthus.github.io/post/hackathon_Match%283%29/</link>
+      <pubDate>Thu, 03 Nov 2016 19:54:22 +0800</pubDate>
+      
+      <guid>https://elegenthus.github.io/post/hackathon_Match%283%29/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://match.muxixyz.com&#34;&gt;Match&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;恭喜你，来到了我们的result页面，我们很快就能看到我们的match分数啦~是不是很期待？&lt;br&gt;
+我们先来公布一份超级有爱的match结果~&lt;br&gt;
+&lt;img src=&#34;../../img/match3.png&#34; alt=&#34;&#34; /&gt;
+&lt;br&gt;
+大家可以看到我们的页面上有显示相对应应用中的共同项&lt;br&gt;
+这里我决定只显示有共同项的应用版块，这里采用的方法是在判断每一个版块上所返回的字符串是否为空，代码如下，若info.douban.book为空，则v-show=&amp;ldquo;false&amp;rdquo;，该板块就不会显示&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;common&amp;quot; v-show = &amp;quot;info.douban.book&amp;quot;&amp;gt;
+          &amp;lt;div class=&amp;quot;common_t&amp;quot;&amp;gt;共同看过的小说：&amp;lt;/div&amp;gt;
+          &amp;lt;div class=&amp;quot;common_t&amp;quot;&amp;gt;
+            {{info.douban.book}}
+          &amp;lt;/div&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;好的，接下来就是我们显示match指数的的百分比图了,动态效果请戳&lt;a href=&#34;https://jsbin.com/lafiqatocu/edit?html,css,output&#34;&gt;piechart&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+        ...
+    &amp;lt;svg viewBox = &amp;quot;0 0 32 32&amp;quot;&amp;gt;
+    &amp;lt;circle class=&amp;quot;circle&amp;quot; r = &amp;quot;16&amp;quot; cx = &amp;quot;16&amp;quot; cy =&amp;quot;16&amp;quot; v-bind:style = &amp;quot;{strokeDasharray:Math.floor(score) + &#39; 100&#39;}&amp;quot;&amp;gt;&amp;lt;/circle&amp;gt;
+    &amp;lt;/svg&amp;gt;
+        ...
+ &amp;lt;/template&amp;gt;
+
+&amp;lt;style&amp;gt;
+        ...
+      svg{
+        width: 100px;
+        height: 100px;
+        transform: rotate(-90deg);
+        border-radius: 50%;
+      }
+      .circle{
+        fill:transparent;
+        stroke:#e1484b;
+        stroke-width:6px;
+        animation: fillup 1s ease-out forwards; 
+      }
+      @keyframes fillup{
+        from{stroke-dasharray: 0 100;}
+      }
+        ...
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们将采用svg标签来画这个百分比图，用stroke属性来实现动态变化效果
+&lt;br&gt;
+svg的viewBox顾名思义就是视区盒子的意思，它覆盖整个svg图，我们在style中定义svg是一个半径为50px的圆，那么viewBox = &amp;ldquo;0 0 32 32&amp;rdquo;只是内部将此圆的半径长分为32份，而circle中的r代表此圆的半径，相对于viewBox而言的16，既是整个svg图的一半，cx，cy是其圆心坐标，处于svg图的正中心。&lt;br&gt;
+接下来看它的动态效果如何实现，这里我们仍然需要用&lt;a href=&#34;http://www.runoob.com/svg/svg-stroke.html&#34;&gt;svg的stroke&lt;/a&gt;属性，stroke会沿着svg图像（此处为一个半径为50的圆）的边界划出一条线，我们再用animation属性使其产生变化的效果。这样一个piechart就完成啦&lt;br&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;好啦，你还等什么，赶紧去寻找你和你的TA的相同点吧~&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>hackathon_Match(2)</title>
+      <link>https://elegenthus.github.io/post/hackathon_Match%282%29/</link>
+      <pubDate>Wed, 02 Nov 2016 18:46:18 +0800</pubDate>
+      
+      <guid>https://elegenthus.github.io/post/hackathon_Match%282%29/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://match.muxixyz.com&#34;&gt;Match&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;接下来我们来一起看index.vue,先展示一下我们的成品页面
+&lt;img src=&#34;../../img/match1.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;../../img/match2.png&#34; alt=&#34;&#34; /&gt;
+很漂亮对不对？&lt;br&gt;
+第一个页面的具体样式我们这里不做赘述，我们怎么从第一个页面切换到第二个页面呢？&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;main item&amp;quot; v-bind:class=&amp;quot;{ mainNext : onNext}&amp;quot; v-on:mousewheel=&amp;quot;scrollNext&amp;quot;&amp;gt;
+    ...
+&amp;lt;/div&amp;gt;
+&amp;lt;div class=&amp;quot;input item&amp;quot;  v-bind:class=&amp;quot;{ inputNext : onNext}&amp;quot;&amp;gt;
+    ...
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;第一个div main中装的是第一个页面的内容，第二个div input装的是第二个页面的内容,我们用v-bind绑定选择器，并设置一个状态值onNext,当onNext为true的时候便给两个div加上相应的class，我们可以利用这一性质设置animation点击产生滑动特效，代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;.mainNext{
+    animation: main_leave 2s ease-in-out;
+    opacity: 0;
+  }
+  @keyframes main_leave {
+    from{
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to{
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+  }
+  .inputNext{
+    animation: input_show 2s ease-in-out;
+    z-index: 3;
+    opacity: 1;
+  }
+  @keyframes input_show {
+    from{
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们可以实现点击下翻按钮产生滑动特效，在放有下翻图标的div上使用v-on监听click事件，绑定next函数，将onNext改为true&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;methods:{
+        next: function (event) {
+            this.onNext = true
+        }
+        ...
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;若想实现滑动页面便能翻页的特效，就在main中监听mousewheel事件，若检测到用户滑动则触发scrollNext函数&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;scrollNext:function(e){
+      if (this.onNext) {
+        return
+      }
+      this.onNext = true
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;注意到我设置了一个if语句，判断onNext是否为true，若为否则将其设置为true，这是为了确保只会触发一次滑动事件
+&lt;br&gt;
+好的接下来我们通过滑动来到了第二个页面，关于第二个页面这次我新学到的一招是在父元素上设置text-align: justify;让其子元素水平居中，不过这一方法只能让处于非最后一行的子元素并列显示，因此我们还要在父元素中需居中的子元素后人为加上一个div&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;text_align_fix&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+.text_align_fix{
+      display: inline-block;
+      width: 100%;
+      height: 0;
+      overflow: hidden;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来我们来看每个输入框的数据如何传给后台，其实很简单，是使用vue的v-model绑定相应的数据，然后使用fetch发送post给后台,我们以网易云音乐的数据传送为例&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+    &amp;lt;!-- 用v-model绑定数据 --&amp;gt;
+    &amp;lt;input type=&amp;quot;text&amp;quot; placeholder=&amp;quot;你的ID&amp;quot; v-model = &amp;quot;wangyiId1&amp;quot;&amp;gt;
+    &amp;lt;input type=&amp;quot;text&amp;quot; placeholder=&amp;quot;TA的ID&amp;quot; v-model = &amp;quot;wangyiId2&amp;quot;&amp;gt;
+    ...
+    &amp;lt;!-- 绑定 点击触发count函数事件 --&amp;gt;
+    &amp;lt;button class=&amp;quot;button match_button&amp;quot; v-on:click = &amp;quot;count&amp;quot;&amp;gt;MATCH&amp;lt;/button&amp;gt;
+    ...
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script&amp;gt;
+import &#39;whatwg-fetch&#39;;
+export default {
+  name:&amp;quot;index&amp;quot;,
+    data (){
+        return {
+            onNext:false,  // 初始化设置产生滑动效果的状态位为false
+            isloading:false, //初始化页面加载效果的状态位为false（后文会提到）
+            wangyiId1: &amp;quot;&amp;quot;, //定义相对应的变量用于存储数据
+            wangyiId2: &amp;quot;&amp;quot;,
+        }
+    },
+    methods:{
+        next: function (event) {
+            this.onNext = true
+        },
+        count:function(event){
+            this.isloading = true
+      fetch(&#39;/getScore/&#39;, {     //发送post请求
+      method: &#39;POST&#39;,
+      headers: {
+            &#39;Accept&#39;: &#39;application/json&#39;,
+            &#39;Content-Type&#39;: &#39;application/json&#39;
+        },
+      body: JSON.stringify({
+            wangyiId1: this.wangyiId1,
+            wangyiId2: this.wangyiId2
+        })
+    })
+    .then( res =&amp;gt; {
+      return res.json()
+    })
+    .then( json =&amp;gt; {
+            this.$parent.score = json  //将返回的数据赋给app.vue中定义的score
+            this.$router.push(&amp;quot;result&amp;quot;)  //然后切换到result页面
+            })
+        }
+    }
+}
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;接下来我们就进入查看结果的页面啦，下一篇会详细介绍一下result.vue &lt;br&gt;
+ps:想知道button的hover效果是怎么实现的吗？可以戳&lt;a href=&#34;http://codepen.io/nw/pen/GqBzJ&#34;&gt;Flat &amp;amp; Shiny Button (hover effect)&lt;/a&gt;~&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>hackathon_Match(1)</title>
+      <link>https://elegenthus.github.io/post/hackathon_Match%281%29/</link>
+      <pubDate>Wed, 02 Nov 2016 17:07:33 +0800</pubDate>
+      
+      <guid>https://elegenthus.github.io/post/hackathon_Match%281%29/</guid>
+      <description>&lt;p&gt;上周末和团队的大大们一起去参加了武汉hackathon，真是一次难忘的体验啊~&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;首先奉上我们组的产品&lt;a href=&#34;http://match.muxixyz.com&#34;&gt;Match&lt;/a&gt;，这是一款通过输入两个人的豆瓣、网易云音乐、微博和知乎账号，寻找其共同项，最后输出一个匹配指数的产品，下面我将简单总结一下此次用到的一些前端技术。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Match是一个使用vue-router实现页面切换效果的单页web应用，所以我们此次只有一个html页面&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
+    &amp;lt;div id=&amp;quot;app&amp;quot;&amp;gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;script src=&amp;quot;/static/main.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;/body&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;重点是main.js部分，它作为入口文件，规定了路由的含义&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;import Vue from &#39;vue&#39;
+import Index from &#39;./componnents/index&#39;
+import Result from &#39;./componnents/result&#39;
+import VueRouter from &#39;vue-router&#39;
+import App from &#39;./componnents/app&#39;;
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  mode: &#39;history&#39;,
+  base: __dirname,
+  routes: [
+    { path: &#39;/&#39;, component: Index },
+    { path: &#39;/result&#39;, component: Result }
+  ]
+})
+
+new Vue({
+  router,
+  el: &#39;#app&#39;,
+  render: h =&amp;gt; h(App)
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;先是引入vue-router，然后调用构造器VueRouter定义了一个新的router，在routes中规定访问路径，并将路径path和组件component一一对应地映射起来，然后将其挂载到一个已经vue初始化好的#app元素上&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;我们这次的页面中设置了一个父组件，两个子组件&lt;br&gt;
+app.vue为此次的父组件，它这次的主要使命是渲染出背景，match的背景中的星空效果是参考&lt;a href=&#34;http://codepen.io/CKH4/pen/vNyyaL&#34;&gt;Random Pure CSS Parallax Stars&lt;/a&gt; &lt;br&gt;
+可是如果将1000多行的css代码直接copy到组件的style标签中，会使该组件页面上的别的样式变得复杂难懂，于是我们在这里将该段css代码放到background.scss中，在用import标签引入。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@import &amp;quot;../scss/background.scss&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在父组件中我们除了将vue创建的app放上去之外，不要忘记页面样式的reset哦~由于这次我们主要使用到的是input输入框和button，于是我们对它们的样式进行重置，部分代码如下&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;html, body{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: PingFang SC;
+}
+input{
+  border:0;
+  outline: none;
+  padding: 0;
+}
+button{
+  border:0;
+  padding:0;
+  box-sizing: content-box;
+  margin: 0;
+  background-color: transparent;
+  outline: none;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后不要忘记定义一个score对象来储存返回的数据&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export default {
+  name: &amp;quot;App&amp;quot;,
+    data (){
+        return {
+            score:{}
+    }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最后在app.vue的template中除了放背景的相关代码，还要使用&lt;router-view&gt;&lt;/router-view&gt;标签，它用于渲染匹配的组件。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;router-view&amp;gt;&amp;lt;/router-view&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;以上就是父组件的内容，下次我们将会对两个子组件index.vue和result.vue进行详细介绍&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>vuetest</title>
-      <link>/post/vuetest/</link>
+      <link>https://elegenthus.github.io/post/vuetest/</link>
       <pubDate>Sat, 22 Oct 2016 17:17:19 +0800</pubDate>
       
-      <guid>/post/vuetest/</guid>
+      <guid>https://elegenthus.github.io/post/vuetest/</guid>
       <description>&lt;p&gt;这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求&lt;/p&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件中进行渲染&lt;br&gt;&lt;br&gt;
+&lt;p&gt;目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件&lt;br&gt;&lt;br&gt;
 假设我们请求的第一个API是一个包含多个对象的数组，其中每一个对象包含如下评论信息&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;    { &amp;quot;body&amp;quot;: &amp;quot;比较轻松，期末小组做ppt&amp;quot;, 
-	&amp;quot;liked&amp;quot;: false, 
-	&amp;quot;user_name&amp;quot;: &amp;quot;学而2016&amp;quot;,
-	 &amp;quot;id&amp;quot;: 1244, 
-	 &amp;quot;likes&amp;quot;: 0 }
+&lt;pre&gt;&lt;code&gt;  {    
+    &amp;quot;id&amp;quot;: 1244, 
+    &amp;quot;likes&amp;quot;: 0 ,
+    &amp;quot;liked&amp;quot;: false, 
+    &amp;quot;user_name&amp;quot;: &amp;quot;学而2016&amp;quot;,
+    &amp;quot;body&amp;quot;: &amp;quot;比较轻松，期末小组做ppt&amp;quot;
+  }
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;我们将从这个API中获取每一个对象的body信息并将其显示在页面上&lt;br&gt;
+&lt;p&gt;我们将从这个API中获取每一个对象的body信息并将其显示在页面上&lt;br&gt;&lt;br&gt;
 1.首先，我们创建一个part1.vue，这是第一个子组件的页面，在每一个vue组件的页面中，应该有template标签，里面包含页面上显示的内容，有style标签，控制页面的具体样式，有script标签，包含我们对页面上内容的操作。由于我们此次请求信息返回的是一个数组对象，所以我决定在数组中将其以列表的形式展示出来，在template中代码如下&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
@@ -53,8 +375,8 @@
 &amp;lt;/script&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&amp;lsquo;sass&amp;rsquo;属性&lt;br&gt;
-2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&amp;rdquo;user_name&amp;rdquo;和&amp;rdquo;id&amp;rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，template中的代码如下&lt;/p&gt;
+&lt;p&gt;关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&amp;lsquo;sass&amp;rsquo;属性&lt;br&gt;&lt;br&gt;
+2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&amp;rdquo;user_name&amp;rdquo;和&amp;rdquo;id&amp;rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，因为一个组件中只能有一个并行的div，template中的代码如下&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
   &amp;lt;div&amp;gt;
@@ -101,7 +423,7 @@
         return res.json()
       })
       Promise.all([promise1, promise2]).then( values =&amp;gt; {
-        console.log(this.$refs.courseInfo.obj)
+        //console.log(this.$refs.courseInfo.obj)
         this.$refs.courseInfo.list= values[1]
         this.$refs.comment.obj = values[0]
         this.isLoading = false
@@ -115,10 +437,12 @@
 &amp;lt;/script&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;由于我们这里还会使用fetch方法请求API所以还要先npm装一下fetch（如果只是在最新版的chrome中就不必如此），具体方法见&lt;a href=&#34;https://github.com/github/fetch&#34;&gt;fetch&lt;/a&gt; &lt;br&gt;
-data里面我们定义了一个isloding的值，是为了在浏览器还没有请求到数据之前先显示一个加载中的文字or信息提示一下，这个提示页面会一直存在直到所有的信息请求完毕，然后我们把isloading的值改为false转而显示页面应该显示的信息&lt;br&gt;
-然后开始请求API，由于返回的是数据流，所以用res.json() 把它转换成对象，用promise.all方法对相应的对象进行赋值操作，这里使用了v-ref子组件指定一个索引 ID，这样可以直接访问子组件，详见&lt;a href=&#34;https://vuejs.org.cn/guide/components.html&#34;&gt;vue组件&lt;/a&gt; &lt;br&gt;
-最后不要忘记了在component中注册一下子组件哦，这样才能在相应的template中用标签形式引入。&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;接下来是几点要注意的地方： &lt;br&gt;&lt;br&gt;
+a.由于我们这里还会使用fetch方法请求API所以还要先npm装一下fetch（如果只是在最新版的chrome中就不必如此），具体方法见&lt;a href=&#34;https://github.com/github/fetch&#34;&gt;fetch&lt;/a&gt; &lt;br&gt;&lt;br&gt;
+b.data里面我们定义了一个isloding的值，是为了在浏览器还没有请求到数据之前先显示一个加载中的文字or信息提示一下，这个提示页面会一直存在直到所有的信息请求完毕，然后我们把isloading的值改为false转而显示页面应该显示的信息&lt;br&gt;&lt;br&gt;
+c.然后开始请求API，由于返回的是数据流，所以用res.json() 把它转换成对象，用promise.all方法对相应的对象进行赋值操作，这里使用了v-ref子组件指定一个索引 ID，这样可以直接访问子组件，详见&lt;a href=&#34;https://vuejs.org.cn/guide/components.html&#34;&gt;vue组件&lt;/a&gt; &lt;br&gt;&lt;br&gt;
+d.重点强调一下promise.all是等待其参数全部请求成功返回后才会进行下一步的操作，这就正好满足我们希望两个promise成功就拿掉loading页面转而显示请求到的信息这一要求，我们将会在promise.all后的then中将isloading的值改为false &lt;br&gt;&lt;br&gt;
+e.最后不要忘记了在component中注册一下子组件哦，这样才能在相应的template中用标签形式引入。&lt;br&gt;&lt;br&gt;&lt;/p&gt;
 </description>
     </item>
     
