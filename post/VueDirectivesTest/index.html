@@ -74,22 +74,25 @@ binding是一个包含了众多性质的对象，关于它的所有的性质的�
 <p>在这个scroll.js中我们需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，在解除绑定的时候也要将监听事件从window上移除，所以我们必须给回调函数取一个名字scrollCallback，在unbind函数中将监听移除。但是由于我们还希望滑动到页面底端再发请求，也就是说不能马上执行binding.value，怎样实现这一点呢？我们把scrollCallback函数的具体内容写在对象外面，将bind.value作为函数的参数传进scrollCallback，在满足条件时调用binding.value <br>
 2.在组件里import进这个directive <br></p>
 
-<pre><code>import scrollDirective from '../../directives/scroll'
-</code></pre>
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">import</span> <span class="nx">scrollDirective</span> <span class="nx">from</span> <span class="s1">&#39;../../directives/scroll&#39;</span>
+</code></pre></div>
+</p>
 
 <p>使用import将directive引入组件 <br>
 3.在组件的directives中注册scroll</p>
 
-<pre><code class="language-javascript">directives: {
-    scroll: scrollDirective
-},
-</code></pre>
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">directives</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">scroll</span><span class="o">:</span> <span class="nx">scrollDirective</span>
+<span class="p">},</span>
+</code></pre></div>
+</p>
 
 <p>将引入的组件注册到scroll上 <br>
 4.在元素上加上directive指令<br></p>
 
-<pre><code class="language-javascript">v-scroll = &quot;onScroll&quot;
-</code></pre>
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">v</span><span class="o">-</span><span class="nx">scroll</span> <span class="o">=</span> <span class="s2">&quot;onScroll&quot;</span>
+</code></pre></div>
+</p>
 
 <p>用注册好的名字在相对应的元素上加入指令 <br>
 5.编写directive指令中的函数<br>
