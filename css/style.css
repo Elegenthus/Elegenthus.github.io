@@ -345,6 +345,10 @@ article.single pre {
   padding: 2rem;
 }
 
+article.single section.body img{
+  width: 100%;
+}
+
 article.single p code {
   padding: 0.2em 0.5em;
   border-radius: 3px;

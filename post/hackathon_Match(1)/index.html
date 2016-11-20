@@ -50,89 +50,13 @@
 
 <p>Match是一个使用vue-router实现页面切换效果的单页web应用，所以我们此次只有一个html页面</p>
 
-<pre><code>&lt;body&gt;
-    &lt;div id=&quot;app&quot;&gt;
-    &lt;/div&gt;
-    &lt;script src=&quot;/static/main.js&quot;&gt;&lt;/script&gt;
-&lt;/body&gt;
-</code></pre>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;app&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;/static/main.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+</code></pre></div>
 
-<p>重点是main.js部分，它作为入口文件，规定了路由的含义</p>
-
-<pre><code>import Vue from 'vue'
-import Index from './componnents/index'
-import Result from './componnents/result'
-import VueRouter from 'vue-router'
-import App from './componnents/app';
-Vue.use(VueRouter)
-
-const router = new VueRouter({
-  mode: 'history',
-  base: __dirname,
-  routes: [
-    { path: '/', component: Index },
-    { path: '/result', component: Result }
-  ]
-})
-
-new Vue({
-  router,
-  el: '#app',
-  render: h =&gt; h(App)
-})
-</code></pre>
-
-<p>先是引入vue-router，然后调用构造器VueRouter定义了一个新的router，在routes中规定访问路径，并将路径path和组件component一一对应地映射起来，然后将其挂载到一个已经vue初始化好的#app元素上<br></p>
-
-<p>我们这次的页面中设置了一个父组件，两个子组件<br>
-app.vue为此次的父组件，它这次的主要使命是渲染出背景，match的背景中的星空效果是参考<a href="http://codepen.io/CKH4/pen/vNyyaL">Random Pure CSS Parallax Stars</a> <br>
-可是如果将1000多行的css代码直接copy到组件的style标签中，会使该组件页面上的别的样式变得复杂难懂，于是我们在这里将该段css代码放到background.scss中，在用import标签引入。</p>
-
-<pre><code>@import &quot;../scss/background.scss&quot;;
-</code></pre>
-
-<p>在父组件中我们除了将vue创建的app放上去之外，不要忘记页面样式的reset哦~由于这次我们主要使用到的是input输入框和button，于是我们对它们的样式进行重置，部分代码如下</p>
-
-<pre><code>html, body{
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  font-family: PingFang SC;
-}
-input{
-  border:0;
-  outline: none;
-  padding: 0;
-}
-button{
-  border:0;
-  padding:0;
-  box-sizing: content-box;
-  margin: 0;
-  background-color: transparent;
-  outline: none;
-}
-</code></pre>
-
-<p>然后不要忘记定义一个score对象来储存返回的数据</p>
-
-<pre><code>export default {
-  name: &quot;App&quot;,
-    data (){
-        return {
-            score:{}
-    }
-    }
-}
-</code></pre>
-
-<p>最后在app.vue的template中除了放背景的相关代码，还要使用<router-view></router-view>标签，它用于渲染匹配的组件。</p>
-
-<pre><code>&lt;router-view&gt;&lt;/router-view&gt;
-</code></pre>
-
-<p>以上就是父组件的内容，下次我们将会对两个子组件index.vue和result.vue进行详细介绍</p>
 
   </section>
 </article>

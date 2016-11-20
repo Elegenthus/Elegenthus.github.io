@@ -47,101 +47,109 @@
 <p>目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件<br><br>
 假设我们请求的第一个API是一个包含多个对象的数组，其中每一个对象包含如下评论信息</p>
 
-<pre><code>  {    
-    &quot;id&quot;: 1244, 
-    &quot;likes&quot;: 0 ,
-    &quot;liked&quot;: false, 
-    &quot;user_name&quot;: &quot;学而2016&quot;,
-    &quot;body&quot;: &quot;比较轻松，期末小组做ppt&quot;
-  }
-</code></pre>
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span></span>  <span class="p">{</span>    
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1244</span><span class="p">,</span> 
+    <span class="nt">&quot;likes&quot;</span><span class="p">:</span> <span class="mi">0</span> <span class="p">,</span>
+    <span class="nt">&quot;liked&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> 
+    <span class="nt">&quot;user_name&quot;</span><span class="p">:</span> <span class="s2">&quot;学而2016&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;比较轻松，期末小组做ppt&quot;</span>
+  <span class="p">}</span>
+</code></pre></div>
+
 
 <p>我们将从这个API中获取每一个对象的body信息并将其显示在页面上<br><br>
 1.首先，我们创建一个part1.vue，这是第一个子组件的页面，在每一个vue组件的页面中，应该有template标签，里面包含页面上显示的内容，有style标签，控制页面的具体样式，有script标签，包含我们对页面上内容的操作。由于我们此次请求信息返回的是一个数组对象，所以我决定在数组中将其以列表的形式展示出来，在template中代码如下</p>
 
-<pre><code>&lt;template&gt;
-    &lt;ul id=&quot;app1&quot;&gt;
-      &lt;li v-for = &quot;item in list&quot; &gt;
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">ul</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;app1&quot;</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">li</span> <span class="na">v-for </span><span class="o">=</span> <span class="s">&quot;item in list&quot;</span> <span class="p">&gt;</span>
        {{ item.body }}
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/template&gt;
-</code></pre>
+      <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</code></pre></div>
+
 
 <p>对了，还没有解释，其中的item是我为返回的数组取的名字，这一步是在在script标签中进行的</p>
 
-<pre><code>&lt;script&gt;
-  export default {
-    data() {
-      return {
-        list:[]
-      }
-    }
-  }
-&lt;/script&gt;
-</code></pre>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+  <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+    <span class="nx">data</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">{</span>
+        <span class="nx">list</span><span class="o">:</span><span class="p">[]</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="o">&lt;</span><span class="err">/script&gt;</span>
+</code></pre></div>
+
 
 <p>关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&lsquo;sass&rsquo;属性<br><br>
 2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&rdquo;user_name&rdquo;和&rdquo;id&rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，因为一个组件中只能有一个并行的div，template中的代码如下</p>
 
-<pre><code>&lt;template&gt;
-  &lt;div&gt;
-    &lt;div&gt;
+<p><div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
       {{ obj.user_name }}
-    &lt;/div&gt;
-    &lt;div&gt;
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
       {{ obj.id }}
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
-</code></pre>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</code></pre></div>
+</p>
 
 <p>3.好了，接下来就是我们的重头戏父组件了，parent.vue <br>
 首先上代码</p>
 
-<pre><code>&lt;template&gt;
-    &lt;div&gt;
-      &lt;div v-show=&quot;isLoading&quot;&gt;
+<p><div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">div</span> <span class="na">v-show</span><span class="o">=</span><span class="s">&quot;isLoading&quot;</span><span class="p">&gt;</span>
         加载中
-      &lt;/div&gt;
-      &lt;courseInfo ref=&quot;courseInfo&quot;&gt;&lt;/courseInfo&gt;
-      &lt;courseComment ref=&quot;comment&quot;&gt;&lt;/courseComment&gt;
-    &lt;/div&gt;
-&lt;/template&gt;
+      <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">courseInfo</span> <span class="na">ref</span><span class="o">=</span><span class="s">&quot;courseInfo&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">courseInfo</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nt">courseComment</span> <span class="na">ref</span><span class="o">=</span><span class="s">&quot;comment&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">courseComment</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
+</code></pre></div>
+</p>
 
-&lt;script&gt;
-  import part1 from './part1'//把子组件和fecth方法import进来
-  import part2 from './part2'
-  import 'whatwg-fetch';
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+  <span class="kr">import</span> <span class="nx">part1</span> <span class="nx">from</span> <span class="s1">&#39;./part1&#39;</span><span class="c1">//把子组件和fecth方法import进来</span>
+  <span class="kr">import</span> <span class="nx">part2</span> <span class="nx">from</span> <span class="s1">&#39;./part2&#39;</span>
+  <span class="kr">import</span> <span class="s1">&#39;whatwg-fetch&#39;</span><span class="p">;</span>
 
-  export default {
-    data() {
-      return {
-        isLoading:true
-      }
-    },
-  	mounted () {
-  		let promise1 = fetch(&quot;请求的API的相对路径&quot;).then( (res) =&gt; {
-        return res.json()
-      })
-      let promise2 = fetch(&quot;请求的API的相对路径&quot;)
-      .then( (res) =&gt; {
-        return res.json()
-      })
-      Promise.all([promise1, promise2]).then( values =&gt; {
-        //console.log(this.$refs.courseInfo.obj)
-        this.$refs.courseInfo.list= values[1]
-        this.$refs.comment.obj = values[0]
-        this.isLoading = false
-      })
-    },
-    components:{
-      &quot;courseInfo&quot;:part1,
-      &quot;courseComment&quot;:part2
-    }
-  }
-&lt;/script&gt;
-</code></pre>
+  <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+    <span class="nx">data</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">{</span>
+        <span class="nx">isLoading</span><span class="o">:</span><span class="kc">true</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+  	<span class="nx">mounted</span> <span class="p">()</span> <span class="p">{</span>
+  		<span class="kd">let</span> <span class="nx">promise1</span> <span class="o">=</span> <span class="nx">fetch</span><span class="p">(</span><span class="s2">&quot;请求的API的相对路径&quot;</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">()</span>
+      <span class="p">})</span>
+      <span class="kd">let</span> <span class="nx">promise2</span> <span class="o">=</span> <span class="nx">fetch</span><span class="p">(</span><span class="s2">&quot;请求的API的相对路径&quot;</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">()</span>
+      <span class="p">})</span>
+      <span class="nb">Promise</span><span class="p">.</span><span class="nx">all</span><span class="p">([</span><span class="nx">promise1</span><span class="p">,</span> <span class="nx">promise2</span><span class="p">]).</span><span class="nx">then</span><span class="p">(</span> <span class="nx">values</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="c1">//console.log(this.$refs.courseInfo.obj)</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">$refs</span><span class="p">.</span><span class="nx">courseInfo</span><span class="p">.</span><span class="nx">list</span><span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">$refs</span><span class="p">.</span><span class="nx">comment</span><span class="p">.</span><span class="nx">obj</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">isLoading</span> <span class="o">=</span> <span class="kc">false</span>
+      <span class="p">})</span>
+    <span class="p">},</span>
+    <span class="nx">components</span><span class="o">:</span><span class="p">{</span>
+      <span class="s2">&quot;courseInfo&quot;</span><span class="o">:</span><span class="nx">part1</span><span class="p">,</span>
+      <span class="s2">&quot;courseComment&quot;</span><span class="o">:</span><span class="nx">part2</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="o">&lt;</span><span class="err">/script&gt;</span>
+ 
+</code></pre></div>
+</p>
 
 <p>接下来是几点要注意的地方： <br><br>
 a.由于我们这里还会使用fetch方法请求API所以还要先npm装一下fetch（如果只是在最新版的chrome中就不必如此），具体方法见<a href="https://github.com/github/fetch">fetch</a> <br><br>
