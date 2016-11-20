@@ -67,7 +67,7 @@ binding是一个包含了众多性质的对象，关于它的所有的性质的�
 
 &lt;p&gt;用注册好的名字在相对应的元素上加入指令 &lt;br&gt;
 5.编写directive指令中的函数&lt;br&gt;
-最后在method中编写onScroll函数，也就是上文中对应的binding.value，vue会在滚动的时候执行相应指令 &lt;br&gt;&lt;/p&gt;
+最后在method中编写onScroll函数，也就是上文中对应的binding.value，vue会执行相应v-scroll中的值。 &lt;br&gt;&lt;/p&gt;
 </description>
     </item>
     
