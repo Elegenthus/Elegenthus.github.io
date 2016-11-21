@@ -1,81 +1,148 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title></title>
-    <link>/</link>
-    <description>Recent content on </description>
+    <title>Elegenthus&#39;s blog</title>
+    <link>https://Elegenthus.github.io/</link>
+    <description>Recent content on Elegenthus&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
     <lastBuildDate>Sun, 20 Nov 2016 16:19:56 +0800</lastBuildDate>
-    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://Elegenthus.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>VueDirectivesTest</title>
-      <link>/post/VueDirectivesTest/</link>
+      <link>https://elegenthus.github.io/post/VueDirectivesTest/</link>
       <pubDate>Sun, 20 Nov 2016 16:19:56 +0800</pubDate>
       
-      <guid>/post/VueDirectivesTest/</guid>
+      <guid>https://elegenthus.github.io/post/VueDirectivesTest/</guid>
       <description>
 
-&lt;h2 id=&#34;使用vuedirective封装dom操作:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;使用VueDirective封装Dom操作&lt;/h2&gt;
+&lt;h1 id=&#34;使用vue-directive封装dom操作:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;使用Vue Directive封装DOM操作&lt;/h1&gt;
 
-&lt;p&gt;这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子&lt;/p&gt;
+&lt;p&gt;这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子。&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;1.为什么要使用VueDirective&lt;/em&gt; &lt;br&gt;&lt;br&gt;
-Vue作为一个开发web的前端框架，以其轻量级和指令的丰富多样性而为大众所喜。然而，由于业务需求的不同，有时候我们也需要自己编写vue指令，在里面不可避免地会出现一些dom操作，为了实现View和ViewModel的分离，我们必须封装dom操作，于是我们需要VueDirective。 &lt;br&gt;&lt;br&gt;
-&lt;em&gt;2.VueDirective的简介&lt;/em&gt; &lt;br&gt;&lt;br&gt;
-除了在相关组件中引入directive的指令之外，我们还需要在定义这个directive的操作，vue给我们提供了许多Hook Functions，以便于我们对directive的对象进行具体的操作。&lt;br&gt;&lt;br /&gt;
-例如bind，bind是只会在被绑定的对象节点被插入父节点时被调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。&lt;br&gt;
-bind函数中会提供像el,binding,vnode,oldVnode这样一些形参，这里我们具体看一下binding&lt;br&gt;&lt;br&gt;
-binding是一个包含了众多性质的对象，关于它的所有的性质的介绍可以自行查看&lt;a href=&#34;https://vuejs.org/v2/guide/custom-directive.html&#34;&gt;官方文档&lt;/a&gt; ,比较常用的一个属性binding.value，其对应的是在元素中被传给directive的值，vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则不会被解析执行&lt;br&gt;
-&lt;br&gt;&lt;/p&gt;
+&lt;hr /&gt;
 
-&lt;p&gt;&lt;em&gt;3.怎样使用VueDirective&lt;/em&gt; &lt;br&gt;&lt;br&gt;
-接下来我们来看一个具体使用VueDirective封装dom的scroll事件的例子，在这个例子中我们想要在用户滑动到页面的底端时发请求，请求下一个页面。&lt;br&gt;
-1.首先我们需要一个包含dom操作的scroll.js &lt;br&gt;&lt;/p&gt;
+&lt;h2 id=&#34;1-vue-directive的简介-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;1.Vue Directive的简介 &lt;br&gt;&lt;/h2&gt;
 
-&lt;pre&gt;&lt;code&gt;export default {
-    bind: function(el, binding, vnode) {
-        window.addEventListener(&amp;quot;scroll&amp;quot;, scrollCallback.bind({}, binding.value))
-    },
+&lt;p&gt;directive在Vue中十分常见，Vue提供的许多指令如 &lt;code&gt;v-on&lt;/code&gt; 、 &lt;code&gt;v-show&lt;/code&gt; 使得Vue的功能更加强大，可是仍然有一些操作指令是Vue没有提供的，不过Vue提供了自定义directive的属性方法来满足这一需求。其实，Vue Directive就是一种特殊的HTML元素属性。&lt;br&gt;
+Vue提供了两中注册方法，一种是全局注册，在Vue.directive中定义组件的名字和相关指令操作&lt;/p&gt;
 
-    unbind: function() {
-        window.removeEventListener(&amp;quot;scroll&amp;quot;, scrollCallback)
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;    &lt;span style=&#34;color: #a6e22e&#34;&gt;Vue&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;directive&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;指令的名字&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #75715e&#34;&gt;//一些option，提供许多hook function 定义directive的具体操作，如inserted、bind...&lt;/span&gt;
+        &lt;span style=&#34;color: #a6e22e&#34;&gt;inserted&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;el&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #75715e&#34;&gt;//指令插入元素后的操作&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;在这个scroll.js中我们需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，在解除绑定的时候也要将监听事件从window上移除，所以我们必须给回调函数取一个名字scrollCallback，在unbind函数中将监听移除。但是由于我们还希望滑动到页面底端再发请求，也就是说不能马上执行binding.value，怎样实现这一点呢？我们把scrollCallback函数的具体内容写在对象外面，将bind.value作为函数的参数传进scrollCallback，在满足条件时调用binding.value &lt;br&gt;
-2.在组件里import进这个directive &lt;br&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;import scrollDirective from &#39;../../directives/scroll&#39;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;另一种是局部注册，在对应组件的directives属性里注册组件名，传入指令的option对象&lt;/p&gt;
 
-&lt;p&gt;使用import将directive引入组件 &lt;br&gt;
-3.在组件的directives中注册scroll&lt;/p&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;directives&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;  &lt;span style=&#34;color: #75715e&#34;&gt;//指令的名字&lt;/span&gt;
+    &lt;span style=&#34;color: #75715e&#34;&gt;// 指令的定义&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;pre&gt;&lt;code&gt;directives: {
-    scroll: scrollDirective
-},
-&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;将引入的组件注册到scroll上 &lt;br&gt;
-4.在元素上加上directive指令&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;在定义时，Vue提供了许多hook function，例如 &lt;code&gt;inserted&lt;/code&gt; 、&lt;code&gt;bind&lt;/code&gt;等，&lt;code&gt;bind&lt;/code&gt;是只会在绑定的对象节点被插入父节点时调用一次的函数，与&lt;code&gt;unbind&lt;/code&gt;相对应，&lt;code&gt;unbind&lt;/code&gt;将也只会在元素被解除绑定时调用。&lt;br&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;v-scroll = &amp;quot;onScroll&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;Vue&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;directive&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;指令的名字&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;bind&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;el&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;binding&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;vnode&lt;/span&gt;&lt;span style=&#34;color: #960050; background-color: #1e0010&#34;&gt;，&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;oldVnode&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #75715e&#34;&gt;//绑定指令时调用&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;},&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;unbind&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #75715e&#34;&gt;//指令解除绑定时调用&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;用注册好的名字在相对应的元素上加入指令 &lt;br&gt;
-5.编写directive指令中的函数&lt;br&gt;
-最后在method中编写onScroll函数，也就是上文中对应的binding.value，vue会执行相应v-scroll中的值。 &lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;bind&lt;/code&gt;函数中的&lt;code&gt;binding&lt;/code&gt;，是一个包含了众多属性的对象，关于它的所有的性质的介绍可以自行查看&lt;a href=&#34;https://vuejs.org/v2/guide/custom-directive.html&#34;&gt;官方文档&lt;/a&gt; ,比较常用的一个属性&lt;code&gt;binding.value&lt;/code&gt;，与其对应的是在指令中传入的字符串，Vue会自动解析这个值并执行。与此相对应的另一个属性&lt;code&gt;binding.expression&lt;/code&gt;里的值则就是原始值。&lt;br&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;2-为什么要使用vuedirective-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;2.为什么要使用VueDirective &lt;br&gt;&lt;/h2&gt;
+
+&lt;p&gt;有同学可能会问，我在Vue实例的方法中写DOM操作不可以吗？那为什么使用Vue Directive来封装DOM操作呢？&lt;br&gt;
+这是因为，为了实现View和ViewModel的分离，我们必须封装DOM操作，View层负责页面上的显示，ViewModel层负责改变操作数据，由于Vue是数据驱动的，属于ViewModel层，那么其中就不应该出现View层上的DOM操作，而且，使用Vue Directive是和DOM元素的创建、销毁绑定的。Vue Directive的生命周期方法能让我们更优雅的去在合适的时机进行DOM的操作。而在ViewModel里则没有和DOM元素对应的方法。因为Vue Directive是属于View层面的，所以DOM操作应该被封装在Vue Directive里而不是出现在Vue实例中。 &lt;br&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;3-demo-自制scroll指令-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3. Demo：自制scroll指令 &lt;br&gt;&lt;/h2&gt;
+
+&lt;p&gt;接下来看一个具体使用Vue Directive封装DOM操作的scroll事件的例子，在这个例子中需求是在用户滑动到页面的底端时请求更多数据。&lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;3-1-首先将dom操作封装到指令的option中-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.1 首先将DOM操作封装到指令的option中 &lt;br&gt;&lt;/h3&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;scrollCallback&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;callback&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(document.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;body&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;scrollHeight&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1000&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #66d9ef&#34;&gt;return&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(document.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;body&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;scrollHeight&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;window.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;scrollY&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;100&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;&amp;lt;=&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;document.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;body&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;clientHeight&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #a6e22e&#34;&gt;callback&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;()&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+
+&lt;span style=&#34;color: #66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;callBackWarpped&lt;/span&gt; &lt;span style=&#34;color: #75715e&#34;&gt;// 新变量 保存引用&lt;/span&gt;
+&lt;span style=&#34;color: #66d9ef&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;default&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;bind&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;el&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;binding&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;vnode&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #a6e22e&#34;&gt;callBackWarpped&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;  &lt;span style=&#34;color: #a6e22e&#34;&gt;scrollCallback&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;bind&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;({},&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;binding&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;window.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;addEventListener&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;scroll&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;callBackWarpped&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;},&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;unbind&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;window.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;removeEventListener&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;scroll&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;callBackWarpped&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;首先需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，由于在解除绑定的时候也要将监听事件从window上移除，所以必须给回调函数取一个名字，例如本例中的&lt;code&gt;scrollCallback&lt;/code&gt;，并在unbind函数中将监听移除，因此&lt;code&gt;scrollCallBack&lt;/code&gt;的具体定义应在对象外执行。&lt;br&gt;
+并且回调函数应该在页面滑动到底端时才执行，也就是说不能马上执行 &lt;code&gt;binding.value&lt;/code&gt;，怎样实现这一点呢？可以将&lt;code&gt;bind.value&lt;/code&gt;作为函数的参数传进&lt;code&gt;scrollCallback&lt;/code&gt;，先判断，然后在满足条件时调用&lt;code&gt;binding.value&lt;/code&gt; 。&lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;3-2-在组件里import一个directive-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.2 在组件里import一个directive &lt;br&gt;&lt;/h3&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;scrollDirective&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;from&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;../../directives/scroll&amp;#39;&lt;/span&gt;
+&lt;span style=&#34;color: #75715e&#34;&gt;//import 指令的option的名字 from &amp;#39;指令option的位置&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;使用import将directive引入组件。 &lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;3-3-在组件的directives属性中注册这个指令-值为scroll:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.3 在组件的directives属性中注册这个指令，值为scroll&lt;/h3&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;directives&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;scroll&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;scrollDirective&lt;/span&gt;
+    &lt;span style=&#34;color: #75715e&#34;&gt;//指令的名字:指令的option的名字&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;},&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;将引入的组件注册到scroll上。 &lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;3-4-在相应元素上加上directive指令-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.4 在相应元素上加上directive指令&lt;br&gt;&lt;/h3&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;v&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;scroll&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;onScroll&amp;quot;&lt;/span&gt;
+&lt;span style=&#34;color: #75715e&#34;&gt;//v-&amp;#39;指令的名字&amp;#39; = &amp;quot;回调函数&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;用注册好的名字在相对应的元素上加入指令 。&lt;br&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;3-5-编写directive指令中的函数-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.5 编写directive指令中的函数&lt;br&gt;&lt;/h3&gt;
+
+&lt;p&gt;最后在method中编写&lt;code&gt;onScroll&lt;/code&gt;函数，也就是上文中对应的&lt;code&gt;binding.value&lt;/code&gt;，在这个函数中我们将会请求更多数据，而Vue就会执行相应&lt;code&gt;v-scroll&lt;/code&gt;中的值。 &lt;br&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;具体的Demo请戳&lt;a href=&#34;https://github.com/Elegenthus/scrollDemo/tree/gh-pages&#34;&gt;这里&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>hackathon_Match(3)</title>
-      <link>/post/hackathon_Match%283%29/</link>
+      <link>https://elegenthus.github.io/post/hackathon_Match%283%29/</link>
       <pubDate>Thu, 03 Nov 2016 19:54:22 +0800</pubDate>
       
-      <guid>/post/hackathon_Match%283%29/</guid>
+      <guid>https://elegenthus.github.io/post/hackathon_Match%283%29/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://match.muxixyz.com&#34;&gt;Match&lt;/a&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
@@ -87,45 +154,47 @@ binding是一个包含了众多性质的对象，关于它的所有的性质的�
 大家可以看到我们的页面上有显示相对应应用中的共同项&lt;br&gt;
 这里我决定只显示有共同项的应用版块，这里采用的方法是在判断每一个版块上所返回的字符串是否为空，代码如下，若info.douban.book为空，则v-show=&amp;ldquo;false&amp;rdquo;，该板块就不会显示&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;common&amp;quot; v-show = &amp;quot;info.douban.book&amp;quot;&amp;gt;
-          &amp;lt;div class=&amp;quot;common_t&amp;quot;&amp;gt;共同看过的小说：&amp;lt;/div&amp;gt;
-          &amp;lt;div class=&amp;quot;common_t&amp;quot;&amp;gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;common&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;v-show &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;info.douban.book&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+          &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;common_t&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;共同看过的小说：&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+          &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;common_t&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
             {{info.douban.book}}
-          &amp;lt;/div&amp;gt;
-        &amp;lt;/div&amp;gt;
-      &amp;lt;/div&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+          &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;好的，接下来就是我们显示match指数的的百分比图了,动态效果请戳&lt;a href=&#34;https://jsbin.com/lafiqatocu/edit?html,css,output&#34;&gt;piechart&lt;/a&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
         ...
-    &amp;lt;svg viewBox = &amp;quot;0 0 32 32&amp;quot;&amp;gt;
-    &amp;lt;circle class=&amp;quot;circle&amp;quot; r = &amp;quot;16&amp;quot; cx = &amp;quot;16&amp;quot; cy =&amp;quot;16&amp;quot; v-bind:style = &amp;quot;{strokeDasharray:Math.floor(score) + &#39; 100&#39;}&amp;quot;&amp;gt;&amp;lt;/circle&amp;gt;
-    &amp;lt;/svg&amp;gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;svg&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;viewBox &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;0 0 32 32&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;circle&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;circle&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;r &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;16&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;cx &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;16&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;cy &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;16&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;v-bind:style &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;{strokeDasharray:Math.floor(score) + &amp;#39; 100&amp;#39;}&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;circle&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;svg&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
         ...
- &amp;lt;/template&amp;gt;
+ &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
 
-&amp;lt;style&amp;gt;
-        ...
-      svg{
-        width: 100px;
-        height: 100px;
-        transform: rotate(-90deg);
-        border-radius: 50%;
-      }
-      .circle{
-        fill:transparent;
-        stroke:#e1484b;
-        stroke-width:6px;
-        animation: fillup 1s ease-out forwards; 
-      }
-      @keyframes fillup{
-        from{stroke-dasharray: 0 100;}
-      }
-        ...
-&amp;lt;/style&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;style&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span style=&#34;color: #f92672&#34;&gt;...&lt;/span&gt;
+      &lt;span style=&#34;color: #f92672&#34;&gt;svg&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;width&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;100px&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;height&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;100px&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;transform&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;rotate(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;-90&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;deg);&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;border&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;radius&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;50%&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+      &lt;span style=&#34;color: #a6e22e&#34;&gt;.circle&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;fill&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;transparent;&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;stroke&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;#e1484b&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;stroke&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;width&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;6px&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;animation&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;fillup&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1s&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;ease&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;out&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;forwards;&lt;/span&gt; 
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;@keyframes&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;fillup&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #f92672&#34;&gt;from&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{stroke&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;dasharray&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;100&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;}&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+        &lt;span style=&#34;color: #f92672&#34;&gt;...&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;style&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;我们将采用svg标签来画这个百分比图，用stroke属性来实现动态变化效果
 &lt;br&gt;
@@ -140,10 +209,10 @@ svg的viewBox顾名思义就是视区盒子的意思，它覆盖整个svg图，�
     
     <item>
       <title>hackathon_Match(2)</title>
-      <link>/post/hackathon_Match%282%29/</link>
+      <link>https://elegenthus.github.io/post/hackathon_Match%282%29/</link>
       <pubDate>Wed, 02 Nov 2016 18:46:18 +0800</pubDate>
       
-      <guid>/post/hackathon_Match%282%29/</guid>
+      <guid>https://elegenthus.github.io/post/hackathon_Match%282%29/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;http://match.muxixyz.com&#34;&gt;Match&lt;/a&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
@@ -154,133 +223,139 @@ svg的viewBox顾名思义就是视区盒子的意思，它覆盖整个svg图，�
 很漂亮对不对？&lt;br&gt;
 第一个页面的具体样式我们这里不做赘述，我们怎么从第一个页面切换到第二个页面呢？&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;main item&amp;quot; v-bind:class=&amp;quot;{ mainNext : onNext}&amp;quot; v-on:mousewheel=&amp;quot;scrollNext&amp;quot;&amp;gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;main item&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;v-bind:class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;{ mainNext : onNext}&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;v-on:mousewheel&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;scrollNext&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
     ...
-&amp;lt;/div&amp;gt;
-&amp;lt;div class=&amp;quot;input item&amp;quot;  v-bind:class=&amp;quot;{ inputNext : onNext}&amp;quot;&amp;gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;input item&amp;quot;&lt;/span&gt;  &lt;span style=&#34;color: #a6e22e&#34;&gt;v-bind:class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;{ inputNext : onNext}&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
     ...
-&amp;lt;/div&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;第一个div main中装的是第一个页面的内容，第二个div input装的是第二个页面的内容,我们用v-bind绑定选择器，并设置一个状态值onNext,当onNext为true的时候便给两个div加上相应的class，我们可以利用这一性质设置animation点击产生滑动特效，代码如下：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;.mainNext{
-    animation: main_leave 2s ease-in-out;
-    opacity: 0;
-  }
-  @keyframes main_leave {
-    from{
-        transform: translateY(0);
-        opacity: 1;
-    }
-    to{
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-  }
-  .inputNext{
-    animation: input_show 2s ease-in-out;
-    z-index: 3;
-    opacity: 1;
-  }
-  @keyframes input_show {
-    from{
-      opacity: 0;
-      transform: translateY(100%);
-    }
-    to{
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;.mainNext&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;animation&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;main_leave&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;2s&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;ease&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;in&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;out;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;opacity&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;@keyframes&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;main_leave&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;from&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;transform&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;translateY(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;);&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;opacity&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;transform&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;translateY(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;-100%&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;);&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;opacity&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;.inputNext&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;animation&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;input_show&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;2s&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;ease&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;in&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;out;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;z-index&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;3&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;opacity&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;@keyframes&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;input_show&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;from&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;opacity&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;transform&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;translateY(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;100%&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;);&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;to&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;opacity&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;transform&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;translateY(&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;);&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;我们可以实现点击下翻按钮产生滑动特效，在放有下翻图标的div上使用v-on监听click事件，绑定next函数，将onNext改为true&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;methods:{
-        next: function (event) {
-            this.onNext = true
-        }
-        ...
-    }
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;methods&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #a6e22e&#34;&gt;next&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;event&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;onNext&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;true&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;...&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;若想实现滑动页面便能翻页的特效，就在main中监听mousewheel事件，若检测到用户滑动则触发scrollNext函数&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;scrollNext:function(e){
-      if (this.onNext) {
-        return
-      }
-      this.onNext = true
-    }
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;scrollNext&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;e&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;){&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;onNext&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #66d9ef&#34;&gt;return&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;onNext&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;true&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;注意到我设置了一个if语句，判断onNext是否为true，若为否则将其设置为true，这是为了确保只会触发一次滑动事件
 &lt;br&gt;
 好的接下来我们通过滑动来到了第二个页面，关于第二个页面这次我新学到的一招是在父元素上设置text-align: justify;让其子元素水平居中，不过这一方法只能让处于非最后一行的子元素并列显示，因此我们还要在父元素中需居中的子元素后人为加上一个div&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;div class=&amp;quot;text_align_fix&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;text_align_fix&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
 .text_align_fix{
       display: inline-block;
       width: 100%;
       height: 0;
       overflow: hidden;
     }
-&lt;/code&gt;&lt;/pre&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;接下来我们来看每个输入框的数据如何传给后台，其实很简单，是使用vue的v-model绑定相应的数据，然后使用fetch发送post给后台,我们以网易云音乐的数据传送为例&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
-    &amp;lt;!-- 用v-model绑定数据 --&amp;gt;
-    &amp;lt;input type=&amp;quot;text&amp;quot; placeholder=&amp;quot;你的ID&amp;quot; v-model = &amp;quot;wangyiId1&amp;quot;&amp;gt;
-    &amp;lt;input type=&amp;quot;text&amp;quot; placeholder=&amp;quot;TA的ID&amp;quot; v-model = &amp;quot;wangyiId2&amp;quot;&amp;gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #75715e&#34;&gt;&amp;lt;!-- 用v-model绑定数据 --&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;input&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;text&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;placeholder&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;你的ID&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;v-model &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;wangyiId1&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;input&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;text&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;placeholder&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;TA的ID&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;v-model &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;wangyiId2&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
     ...
-    &amp;lt;!-- 绑定 点击触发count函数事件 --&amp;gt;
-    &amp;lt;button class=&amp;quot;button match_button&amp;quot; v-on:click = &amp;quot;count&amp;quot;&amp;gt;MATCH&amp;lt;/button&amp;gt;
+    &lt;span style=&#34;color: #75715e&#34;&gt;&amp;lt;!-- 绑定 点击触发count函数事件 --&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;button&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;button match_button&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;v-on:click &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;count&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;MATCH&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;button&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
     ...
-&amp;lt;/template&amp;gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
 
-&amp;lt;script&amp;gt;
-import &#39;whatwg-fetch&#39;;
-export default {
-  name:&amp;quot;index&amp;quot;,
-    data (){
-        return {
-            onNext:false,  // 初始化设置产生滑动效果的状态位为false
-            isloading:false, //初始化页面加载效果的状态位为false（后文会提到）
-            wangyiId1: &amp;quot;&amp;quot;, //定义相对应的变量用于存储数据
-            wangyiId2: &amp;quot;&amp;quot;,
-        }
-    },
-    methods:{
-        next: function (event) {
-            this.onNext = true
-        },
-        count:function(event){
-            this.isloading = true
-      fetch(&#39;/getScore/&#39;, {     //发送post请求
-      method: &#39;POST&#39;,
-      headers: {
-            &#39;Accept&#39;: &#39;application/json&#39;,
-            &#39;Content-Type&#39;: &#39;application/json&#39;
-        },
-      body: JSON.stringify({
-            wangyiId1: this.wangyiId1,
-            wangyiId2: this.wangyiId2
-        })
-    })
-    .then( res =&amp;gt; {
-      return res.json()
-    })
-    .then( json =&amp;gt; {
-            this.$parent.score = json  //将返回的数据赋给app.vue中定义的score
-            this.$router.push(&amp;quot;result&amp;quot;)  //然后切换到result页面
-            })
-        }
-    }
-}
-&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;script&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;whatwg-fetch&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+&lt;span style=&#34;color: #66d9ef&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;default&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;index&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;data&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(){&lt;/span&gt;
+        &lt;span style=&#34;color: #66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #a6e22e&#34;&gt;onNext&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;false&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;  &lt;span style=&#34;color: #75715e&#34;&gt;// 初始化设置产生滑动效果的状态位为false&lt;/span&gt;
+            &lt;span style=&#34;color: #a6e22e&#34;&gt;isloading&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;false&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #75715e&#34;&gt;//初始化页面加载效果的状态位为false（后文会提到）&lt;/span&gt;
+            &lt;span style=&#34;color: #a6e22e&#34;&gt;wangyiId1&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #75715e&#34;&gt;//定义相对应的变量用于存储数据&lt;/span&gt;
+            &lt;span style=&#34;color: #a6e22e&#34;&gt;wangyiId2&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;},&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;methods&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #a6e22e&#34;&gt;next&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;event&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;onNext&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;true&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;},&lt;/span&gt;
+        &lt;span style=&#34;color: #a6e22e&#34;&gt;count&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;function&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;event&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;){&lt;/span&gt;
+            &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;isloading&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;true&lt;/span&gt;
+      &lt;span style=&#34;color: #a6e22e&#34;&gt;fetch&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;/getScore/&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;     &lt;span style=&#34;color: #75715e&#34;&gt;//发送post请求&lt;/span&gt;
+      &lt;span style=&#34;color: #a6e22e&#34;&gt;method&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;POST&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+      &lt;span style=&#34;color: #a6e22e&#34;&gt;headers&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;Accept&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;application/json&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+            &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;Content-Type&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;application/json&amp;#39;&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;},&lt;/span&gt;
+      &lt;span style=&#34;color: #a6e22e&#34;&gt;body&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;JSON&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;stringify&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;({&lt;/span&gt;
+            &lt;span style=&#34;color: #a6e22e&#34;&gt;wangyiId1&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;wangyiId1&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+            &lt;span style=&#34;color: #a6e22e&#34;&gt;wangyiId2&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;wangyiId2&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;then&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;res&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;res&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;json&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;()&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;then&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;json&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+            &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;$parent&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;score&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;json&lt;/span&gt;  &lt;span style=&#34;color: #75715e&#34;&gt;//将返回的数据赋给app.vue中定义的score&lt;/span&gt;
+            &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;$router&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;push&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;result&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt;  &lt;span style=&#34;color: #75715e&#34;&gt;//然后切换到result页面&lt;/span&gt;
+            &lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+        &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;script&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;接下来我们就进入查看结果的页面啦，下一篇会详细介绍一下result.vue &lt;br&gt;
 ps:想知道button的hover效果是怎么实现的吗？可以戳&lt;a href=&#34;http://codepen.io/nw/pen/GqBzJ&#34;&gt;Flat &amp;amp; Shiny Button (hover effect)&lt;/a&gt;~&lt;/p&gt;
@@ -289,10 +364,10 @@ ps:想知道button的hover效果是怎么实现的吗？可以戳&lt;a href=&#34
     
     <item>
       <title>hackathon_Match(1)</title>
-      <link>/post/hackathon_Match%281%29/</link>
+      <link>https://elegenthus.github.io/post/hackathon_Match%281%29/</link>
       <pubDate>Wed, 02 Nov 2016 17:07:33 +0800</pubDate>
       
-      <guid>/post/hackathon_Match%281%29/</guid>
+      <guid>https://elegenthus.github.io/post/hackathon_Match%281%29/</guid>
       <description>&lt;p&gt;上周末和团队的大大们一起去参加了武汉hackathon，真是一次难忘的体验啊~&lt;/p&gt;
 
 &lt;hr /&gt;
@@ -303,37 +378,38 @@ ps:想知道button的hover效果是怎么实现的吗？可以戳&lt;a href=&#34
 
 &lt;p&gt;Match是一个使用vue-router实现页面切换效果的单页web应用，所以我们此次只有一个html页面&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt;
-    &amp;lt;div id=&amp;quot;app&amp;quot;&amp;gt;
-    &amp;lt;/div&amp;gt;
-    &amp;lt;script src=&amp;quot;/static/main.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
-&amp;lt;/body&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;body&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;id&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;app&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;script&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;src&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;/static/main.js&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;script&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;body&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;重点是main.js部分，它作为入口文件，规定了路由的含义&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;import Vue from &#39;vue&#39;
-import Index from &#39;./componnents/index&#39;
-import Result from &#39;./componnents/result&#39;
-import VueRouter from &#39;vue-router&#39;
-import App from &#39;./componnents/app&#39;;
-Vue.use(VueRouter)
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;Vue&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;from&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;vue&amp;#39;&lt;/span&gt;
+&lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;Index&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;from&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;./componnents/index&amp;#39;&lt;/span&gt;
+&lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;Result&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;from&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;./componnents/result&amp;#39;&lt;/span&gt;
+&lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;VueRouter&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;from&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;vue-router&amp;#39;&lt;/span&gt;
+&lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;App&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;from&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;./componnents/app&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+&lt;span style=&#34;color: #a6e22e&#34;&gt;Vue&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;use&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;VueRouter&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt;
 
-const router = new VueRouter({
-  mode: &#39;history&#39;,
-  base: __dirname,
-  routes: [
-    { path: &#39;/&#39;, component: Index },
-    { path: &#39;/result&#39;, component: Result }
-  ]
-})
+&lt;span style=&#34;color: #66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;router&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;VueRouter&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;({&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;mode&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;history&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;base&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;__dirname&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;routes&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;[&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;path&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;component&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;Index&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;},&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;path&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;/result&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;component&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;Result&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;]&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
 
-new Vue({
-  router,
-  el: &#39;#app&#39;,
-  render: h =&amp;gt; h(App)
-})
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span style=&#34;color: #66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;Vue&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;({&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;router&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;el&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;#app&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;render&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;h&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;h&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;App&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;先是引入vue-router，然后调用构造器VueRouter定义了一个新的router，在routes中规定访问路径，并将路径path和组件component一一对应地映射起来，然后将其挂载到一个已经vue初始化好的#app元素上&lt;br&gt;&lt;/p&gt;
 
@@ -341,49 +417,53 @@ new Vue({
 app.vue为此次的父组件，它这次的主要使命是渲染出背景，match的背景中的星空效果是参考&lt;a href=&#34;http://codepen.io/CKH4/pen/vNyyaL&#34;&gt;Random Pure CSS Parallax Stars&lt;/a&gt; &lt;br&gt;
 可是如果将1000多行的css代码直接copy到组件的style标签中，会使该组件页面上的别的样式变得复杂难懂，于是我们在这里将该段css代码放到background.scss中，在用import标签引入。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;@import &amp;quot;../scss/background.scss&amp;quot;;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #960050; background-color: #1e0010&#34;&gt;@&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;../scss/background.scss&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;在父组件中我们除了将vue创建的app放上去之外，不要忘记页面样式的reset哦~由于这次我们主要使用到的是input输入框和button，于是我们对它们的样式进行重置，部分代码如下&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;html, body{
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  font-family: PingFang SC;
-}
-input{
-  border:0;
-  outline: none;
-  padding: 0;
-}
-button{
-  border:0;
-  padding:0;
-  box-sizing: content-box;
-  margin: 0;
-  background-color: transparent;
-  outline: none;
-}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;html,&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;body&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;margin&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;padding&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;width&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;100%&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;height&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;100%&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;font-family&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;PingFang&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;SC;&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f92672&#34;&gt;input&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;border&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;outline&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;none;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;padding&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f92672&#34;&gt;button&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;border&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;padding&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;box&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;sizing&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;content&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;box;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;margin&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;background-color&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;transparent;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;outline&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;none;&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;然后不要忘记定义一个score对象来储存返回的数据&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;export default {
-  name: &amp;quot;App&amp;quot;,
-    data (){
-        return {
-            score:{}
-    }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;default&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+  &lt;span style=&#34;color: #a6e22e&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;App&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;data&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(){&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+          &lt;span style=&#34;color: #a6e22e&#34;&gt;score&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{}&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;最后在app.vue的template中除了放背景的相关代码，还要使用&lt;router-view&gt;&lt;/router-view&gt;标签，它用于渲染匹配的组件。&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;router-view&amp;gt;&amp;lt;/router-view&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;router-view&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;router-view&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;以上就是父组件的内容，下次我们将会对两个子组件index.vue和result.vue进行详细介绍&lt;/p&gt;
 </description>
@@ -391,10 +471,10 @@ button{
     
     <item>
       <title>vuetest</title>
-      <link>/post/vuetest/</link>
+      <link>https://elegenthus.github.io/post/vuetest/</link>
       <pubDate>Sat, 22 Oct 2016 17:17:19 +0800</pubDate>
       
-      <guid>/post/vuetest/</guid>
+      <guid>https://elegenthus.github.io/post/vuetest/</guid>
       <description>&lt;p&gt;这是个人的一点小笔记，记录在学习vue的过程中解决的的一些小需求&lt;/p&gt;
 
 &lt;hr /&gt;
@@ -402,101 +482,109 @@ button{
 &lt;p&gt;目标：在一个页面的父组件中发请求，请求API中数据分别返回到两个子组件&lt;br&gt;&lt;br&gt;
 假设我们请求的第一个API是一个包含多个对象的数组，其中每一个对象包含如下评论信息&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;  {    
-    &amp;quot;id&amp;quot;: 1244, 
-    &amp;quot;likes&amp;quot;: 0 ,
-    &amp;quot;liked&amp;quot;: false, 
-    &amp;quot;user_name&amp;quot;: &amp;quot;学而2016&amp;quot;,
-    &amp;quot;body&amp;quot;: &amp;quot;比较轻松，期末小组做ppt&amp;quot;
-  }
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;  &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;    
+    &lt;span style=&#34;color: #f92672&#34;&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;1244&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; 
+    &lt;span style=&#34;color: #f92672&#34;&gt;&amp;quot;likes&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;&amp;quot;liked&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;false&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; 
+    &lt;span style=&#34;color: #f92672&#34;&gt;&amp;quot;user_name&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;学而2016&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+    &lt;span style=&#34;color: #f92672&#34;&gt;&amp;quot;body&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;比较轻松，期末小组做ppt&amp;quot;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;我们将从这个API中获取每一个对象的body信息并将其显示在页面上&lt;br&gt;&lt;br&gt;
 1.首先，我们创建一个part1.vue，这是第一个子组件的页面，在每一个vue组件的页面中，应该有template标签，里面包含页面上显示的内容，有style标签，控制页面的具体样式，有script标签，包含我们对页面上内容的操作。由于我们此次请求信息返回的是一个数组对象，所以我决定在数组中将其以列表的形式展示出来，在template中代码如下&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
-    &amp;lt;ul id=&amp;quot;app1&amp;quot;&amp;gt;
-      &amp;lt;li v-for = &amp;quot;item in list&amp;quot; &amp;gt;
+&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;ul&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;id&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;app1&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;li&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;v-for &lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;item in list&amp;quot;&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
        {{ item.body }}
-      &amp;lt;/li&amp;gt;
-    &amp;lt;/ul&amp;gt;
-  &amp;lt;/template&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;li&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;ul&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;对了，还没有解释，其中的item是我为返回的数组取的名字，这一步是在在script标签中进行的&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;script&amp;gt;
-  export default {
-    data() {
-      return {
-        list:[]
-      }
-    }
-  }
-&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;script&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;default&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;data&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #a6e22e&#34;&gt;list&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;[]&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #960050; background-color: #1e0010&#34;&gt;/script&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;关于页面的具体样式这里不做赘述，可自行设定，需要提醒的一点是，若用sass来写的话，应该在style标签内加入lang=&amp;lsquo;sass&amp;rsquo;属性&lt;br&gt;&lt;br&gt;
 2.接下来是第二个子组件part2.vue，其格式和part1.vue差不多，不过这个组件里我只想显示API返回的数组中第一个对象中的&amp;rdquo;user_name&amp;rdquo;和&amp;rdquo;id&amp;rdquo;属性，在此设第一个对象为obj，想重点提醒一下的是这两个属性在显示时要被包含在一个div中，因为一个组件中只能有一个并行的div，template中的代码如下&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
-  &amp;lt;div&amp;gt;
-    &amp;lt;div&amp;gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
       {{ obj.user_name }}
-    &amp;lt;/div&amp;gt;
-    &amp;lt;div&amp;gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
       {{ obj.id }}
-    &amp;lt;/div&amp;gt;
-  &amp;lt;/div&amp;gt;
-&amp;lt;/template&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;3.好了，接下来就是我们的重头戏父组件了，parent.vue &lt;br&gt;
 首先上代码&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
-    &amp;lt;div&amp;gt;
-      &amp;lt;div v-show=&amp;quot;isLoading&amp;quot;&amp;gt;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;v-show&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;isLoading&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
         加载中
-      &amp;lt;/div&amp;gt;
-      &amp;lt;courseInfo ref=&amp;quot;courseInfo&amp;quot;&amp;gt;&amp;lt;/courseInfo&amp;gt;
-      &amp;lt;courseComment ref=&amp;quot;comment&amp;quot;&amp;gt;&amp;lt;/courseComment&amp;gt;
-    &amp;lt;/div&amp;gt;
-&amp;lt;/template&amp;gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;courseInfo&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;ref&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;courseInfo&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;courseInfo&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;courseComment&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;ref&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;comment&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;courseComment&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;div&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;template&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
-&amp;lt;script&amp;gt;
-  import part1 from &#39;./part1&#39;//把子组件和fecth方法import进来
-  import part2 from &#39;./part2&#39;
-  import &#39;whatwg-fetch&#39;;
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #272822&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;script&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;&amp;gt;&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;part1&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;from&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;./part1&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #75715e&#34;&gt;//把子组件和fecth方法import进来&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;part2&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;from&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;./part2&amp;#39;&lt;/span&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;#39;whatwg-fetch&amp;#39;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;;&lt;/span&gt;
 
-  export default {
-    data() {
-      return {
-        isLoading:true
-      }
-    },
-  	mounted () {
-  		let promise1 = fetch(&amp;quot;请求的API的相对路径&amp;quot;).then( (res) =&amp;gt; {
-        return res.json()
-      })
-      let promise2 = fetch(&amp;quot;请求的API的相对路径&amp;quot;)
-      .then( (res) =&amp;gt; {
-        return res.json()
-      })
-      Promise.all([promise1, promise2]).then( values =&amp;gt; {
-        //console.log(this.$refs.courseInfo.obj)
-        this.$refs.courseInfo.list= values[1]
-        this.$refs.comment.obj = values[0]
-        this.isLoading = false
-      })
-    },
-    components:{
-      &amp;quot;courseInfo&amp;quot;:part1,
-      &amp;quot;courseComment&amp;quot;:part2
-    }
-  }
-&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
+  &lt;span style=&#34;color: #66d9ef&#34;&gt;export&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;default&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;data&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #a6e22e&#34;&gt;isLoading&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #66d9ef&#34;&gt;true&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;},&lt;/span&gt;
+  	&lt;span style=&#34;color: #a6e22e&#34;&gt;mounted&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+  		&lt;span style=&#34;color: #66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;promise1&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;fetch&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;请求的API的相对路径&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;).&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;then&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;res&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;res&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;json&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;()&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+      &lt;span style=&#34;color: #66d9ef&#34;&gt;let&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;promise2&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;fetch&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;请求的API的相对路径&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;then&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;res&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;res&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;json&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;()&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;Promise.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;all&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;([&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;promise1&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;promise2&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;]).&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;then&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;(&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;values&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+        &lt;span style=&#34;color: #75715e&#34;&gt;//console.log(this.$refs.courseInfo.obj)&lt;/span&gt;
+        &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;$refs&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;courseInfo&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;list&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;values&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;]&lt;/span&gt;
+        &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;$refs&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;comment&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;obj&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #a6e22e&#34;&gt;values&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color: #ae81ff&#34;&gt;0&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;]&lt;/span&gt;
+        &lt;span style=&#34;color: #66d9ef&#34;&gt;this&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;isLoading&lt;/span&gt; &lt;span style=&#34;color: #f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #66d9ef&#34;&gt;false&lt;/span&gt;
+      &lt;span style=&#34;color: #f8f8f2&#34;&gt;})&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;},&lt;/span&gt;
+    &lt;span style=&#34;color: #a6e22e&#34;&gt;components&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;{&lt;/span&gt;
+      &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;courseInfo&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;part1&lt;/span&gt;&lt;span style=&#34;color: #f8f8f2&#34;&gt;,&lt;/span&gt;
+      &lt;span style=&#34;color: #e6db74&#34;&gt;&amp;quot;courseComment&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #f92672&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color: #a6e22e&#34;&gt;part2&lt;/span&gt;
+    &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+  &lt;span style=&#34;color: #f8f8f2&#34;&gt;}&lt;/span&gt;
+&lt;span style=&#34;color: #f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color: #960050; background-color: #1e0010&#34;&gt;/script&amp;gt;&lt;/span&gt;
+ 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
 
 &lt;p&gt;接下来是几点要注意的地方： &lt;br&gt;&lt;br&gt;
 a.由于我们这里还会使用fetch方法请求API所以还要先npm装一下fetch（如果只是在最新版的chrome中就不必如此），具体方法见&lt;a href=&#34;https://github.com/github/fetch&#34;&gt;fetch&lt;/a&gt; &lt;br&gt;&lt;br&gt;
