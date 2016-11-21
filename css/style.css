@@ -114,13 +114,14 @@ footer {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: bold;
-  line-height: 1.25;
+  line-height: 2;
   margin-top: 1em;
   margin-bottom: .5em;
 }
 
 p {
   margin-top: 0;
+  line-height: 1.75;
   margin-bottom: 16px;
   margin-bottom: 1rem;
 }
@@ -350,10 +351,10 @@ article.single section.body img{
 }
 
 article.single p code {
-  padding: 0.2em 0.5em;
+  padding: 0.1em 0.4em;
   border-radius: 3px;
-  background: #747369;
-  color: #f2f0ec;
+  background: #B0E0E6;
+  color: #FFA07A;
 }
 
 article.single figure {

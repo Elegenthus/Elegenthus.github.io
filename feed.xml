@@ -19,14 +19,14 @@
 
 &lt;h1 id=&#34;使用vue-directive封装dom操作:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;使用Vue Directive封装DOM操作&lt;/h1&gt;
 
-&lt;p&gt;这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子&lt;/p&gt;
+&lt;p&gt;这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子。&lt;/p&gt;
 
 &lt;hr /&gt;
 
 &lt;h2 id=&#34;1-vue-directive的简介-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;1.Vue Directive的简介 &lt;br&gt;&lt;/h2&gt;
 
-&lt;p&gt;directive在Vue中十分常见，Vue提供的许多指令如 &lt;code&gt;v-on&lt;/code&gt; 、 &lt;code&gt;v-show&lt;/code&gt; 使得Vue的功能更加强大，可是仍然有一些操作指令是Vue没有提供的，不过Vue提供了自定义directive的属性方法来满足这一需求。其实，Vue Directive就是一种特殊的HTML元素属性&lt;br&gt;
-Vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
+&lt;p&gt;directive在Vue中十分常见，Vue提供的许多指令如 &lt;code&gt;v-on&lt;/code&gt; 、 &lt;code&gt;v-show&lt;/code&gt; 使得Vue的功能更加强大，可是仍然有一些操作指令是Vue没有提供的，不过Vue提供了自定义directive的属性方法来满足这一需求。其实，Vue Directive就是一种特殊的HTML元素属性。&lt;br&gt;
+Vue提供了两中注册方法，一种是全局注册，在Vue.directive中定义组件的名字和相关指令操作&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;Vue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;directive&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;指令的名字&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
         &lt;span class=&#34;c1&#34;&gt;//一些option，提供许多hook function 定义directive的具体操作，如inserted、bind...&lt;/span&gt;
@@ -37,7 +37,7 @@ Vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;另一种是局部注册，在相对应的组件中定义directive，指令的具体的操作将在相应对象中编写&lt;/p&gt;
+&lt;p&gt;另一种是局部注册，在对应组件的directives属性里注册组件名，传入指令的option对象&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;directives&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
   &lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;//指令的名字&lt;/span&gt;
@@ -47,7 +47,7 @@ Vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;在定义时，Vue提供了许多hook function，例如inserted、bind等，bind是只会在绑定的对象节点被插入父节点时调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;在定义时，Vue提供了许多hook function，例如 &lt;code&gt;inserted&lt;/code&gt; 、&lt;code&gt;bind&lt;/code&gt;等，&lt;code&gt;bind&lt;/code&gt;是只会在绑定的对象节点被插入父节点时调用一次的函数，与&lt;code&gt;unbind&lt;/code&gt;相对应，&lt;code&gt;unbind&lt;/code&gt;将也只会在元素被解除绑定时调用。&lt;br&gt;&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Vue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;directive&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;指令的名字&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
     &lt;span class=&#34;nx&#34;&gt;bind&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;el&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;binding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;vnode&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;oldVnode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
@@ -60,7 +60,7 @@ Vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;bind函数中的binding，是一个包含了众多属性的对象，关于它的所有的性质的介绍可以自行查看&lt;a href=&#34;https://vuejs.org/v2/guide/custom-directive.html&#34;&gt;官方文档&lt;/a&gt; ,比较常用的一个属性binding.value，与其对应的是在指令中传入的字符串，Vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则就是原始值&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;bind&lt;/code&gt;函数中的&lt;code&gt;binding&lt;/code&gt;，是一个包含了众多属性的对象，关于它的所有的性质的介绍可以自行查看&lt;a href=&#34;https://vuejs.org/v2/guide/custom-directive.html&#34;&gt;官方文档&lt;/a&gt; ,比较常用的一个属性&lt;code&gt;binding.value&lt;/code&gt;，与其对应的是在指令中传入的字符串，Vue会自动解析这个值并执行。与此相对应的另一个属性&lt;code&gt;binding.expression&lt;/code&gt;里的值则就是原始值。&lt;br&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;2-为什么要使用vuedirective-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;2.为什么要使用VueDirective &lt;br&gt;&lt;/h2&gt;
 
@@ -95,8 +95,8 @@ Vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;首先需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，由于在解除绑定的时候也要将监听事件从window上移除，所以必须给回调函数取一个名字，例如本例中的scrollCallback，并在unbind函数中将监听移除，因此scrollCallBack的具体定义应在对象外执行。&lt;br&gt;
-并且回调函数应该在页面滑动到底端时才执行，也就是说不能马上执行binding.value，怎样实现这一点呢？可以将bind.value作为函数的参数callback传进scrollCallback，先判断，然后在满足条件时调用binding.value &lt;br&gt;&lt;/p&gt;
+&lt;p&gt;首先需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，由于在解除绑定的时候也要将监听事件从window上移除，所以必须给回调函数取一个名字，例如本例中的&lt;code&gt;scrollCallback&lt;/code&gt;，并在unbind函数中将监听移除，因此&lt;code&gt;scrollCallBack&lt;/code&gt;的具体定义应在对象外执行。&lt;br&gt;
+并且回调函数应该在页面滑动到底端时才执行，也就是说不能马上执行 &lt;code&gt;binding.value&lt;/code&gt;，怎样实现这一点呢？可以将&lt;code&gt;bind.value&lt;/code&gt;作为函数的参数传进&lt;code&gt;scrollCallback&lt;/code&gt;，先判断，然后在满足条件时调用&lt;code&gt;binding.value&lt;/code&gt; 。&lt;br&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;3-2-在组件里import一个directive-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.2 在组件里import一个directive &lt;br&gt;&lt;/h3&gt;
 
@@ -105,7 +105,7 @@ Vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;使用import将directive引入组件 &lt;br&gt;&lt;/p&gt;
+&lt;p&gt;使用import将directive引入组件。 &lt;br&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;3-3-在组件的directives属性中注册这个指令-值为scroll:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.3 在组件的directives属性中注册这个指令，值为scroll&lt;/h3&gt;
 
@@ -116,7 +116,7 @@ Vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;将引入的组件注册到scroll上 &lt;br&gt;&lt;/p&gt;
+&lt;p&gt;将引入的组件注册到scroll上。 &lt;br&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;3-4-在相应元素上加上directive指令-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.4 在相应元素上加上directive指令&lt;br&gt;&lt;/h3&gt;
 
@@ -125,11 +125,11 @@ Vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
 
-&lt;p&gt;用注册好的名字在相对应的元素上加入指令 &lt;br&gt;&lt;/p&gt;
+&lt;p&gt;用注册好的名字在相对应的元素上加入指令 。&lt;br&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;3-5-编写directive指令中的函数-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.5 编写directive指令中的函数&lt;br&gt;&lt;/h3&gt;
 
-&lt;p&gt;最后在method中编写onScroll函数，也就是上文中对应的binding.value，在这个函数中我们将会请求更多数据，而Vue就会执行相应v-scroll中的值。 &lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;最后在method中编写&lt;code&gt;onScroll&lt;/code&gt;函数，也就是上文中对应的&lt;code&gt;binding.value&lt;/code&gt;，在这个函数中我们将会请求更多数据，而Vue就会执行相应&lt;code&gt;v-scroll&lt;/code&gt;中的值。 &lt;br&gt;&lt;br&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
