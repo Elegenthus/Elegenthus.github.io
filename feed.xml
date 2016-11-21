@@ -17,16 +17,16 @@
       <guid>https://elegenthus.github.io/post/VueDirectivesTest/</guid>
       <description>
 
-&lt;h1 id=&#34;使用vuedirective封装dom操作:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;使用VueDirective封装Dom操作&lt;/h1&gt;
+&lt;h1 id=&#34;使用vue-directive封装dom操作:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;使用Vue Directive封装DOM操作&lt;/h1&gt;
 
 &lt;p&gt;这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子&lt;/p&gt;
 
 &lt;hr /&gt;
 
-&lt;h2 id=&#34;1-vuedirective的简介-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;1.VueDirective的简介 &lt;br&gt;&lt;/h2&gt;
+&lt;h2 id=&#34;1-vue-directive的简介-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;1.Vue Directive的简介 &lt;br&gt;&lt;/h2&gt;
 
-&lt;p&gt;directive在vue中十分常见，vue提供的许多指令如v-on、v-show使得vue的功能更加强大，可是仍然有一些操作指令是vue没有提供的，不过vue提供了自定义directive的属性方法来满足这一需求。&lt;br&gt;
-vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
+&lt;p&gt;directive在Vue中十分常见，Vue提供的许多指令如 &lt;code&gt;v-on&lt;/code&gt; 、 &lt;code&gt;v-show&lt;/code&gt; 使得Vue的功能更加强大，可是仍然有一些操作指令是Vue没有提供的，不过Vue提供了自定义directive的属性方法来满足这一需求。其实，Vue Directive就是一种特殊的HTML元素属性&lt;br&gt;
+Vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;    &lt;span class=&#34;nx&#34;&gt;Vue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;directive&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;指令的名字&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
         &lt;span class=&#34;c1&#34;&gt;//一些option，提供许多hook function 定义directive的具体操作，如inserted、bind...&lt;/span&gt;
@@ -40,14 +40,14 @@ vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 &lt;p&gt;另一种是局部注册，在相对应的组件中定义directive，指令的具体的操作将在相应对象中编写&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;directives&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-  &lt;span class=&#34;nx&#34;&gt;指令的名字&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+  &lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;  &lt;span class=&#34;c1&#34;&gt;//指令的名字&lt;/span&gt;
     &lt;span class=&#34;c1&#34;&gt;// 指令的定义&lt;/span&gt;
   &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;在定义时，vue提供了许多hook function，例如inserted、bind等，bind是只会在绑定的对象节点被插入父节点时调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;在定义时，Vue提供了许多hook function，例如inserted、bind等，bind是只会在绑定的对象节点被插入父节点时调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。&lt;br&gt;&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;Vue&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;directive&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;指令的名字&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
     &lt;span class=&#34;nx&#34;&gt;bind&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;el&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;binding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;vnode&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;oldVnode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
@@ -60,16 +60,16 @@ vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;bind函数中的binding，是一个包含了众多性质的对象，关于它的所有的性质的介绍可以自行查看&lt;a href=&#34;https://vuejs.org/v2/guide/custom-directive.html&#34;&gt;官方文档&lt;/a&gt; ,比较常用的一个属性binding.value，其对应的是在元素中被传给directive的值，vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则不会被解析执行&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;bind函数中的binding，是一个包含了众多属性的对象，关于它的所有的性质的介绍可以自行查看&lt;a href=&#34;https://vuejs.org/v2/guide/custom-directive.html&#34;&gt;官方文档&lt;/a&gt; ,比较常用的一个属性binding.value，与其对应的是在指令中传入的字符串，Vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则就是原始值&lt;br&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;2-为什么要使用vuedirective-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;2.为什么要使用VueDirective &lt;br&gt;&lt;/h2&gt;
 
 &lt;p&gt;有同学可能会问，我在Vue实例的方法中写DOM操作不可以吗？那为什么使用Vue Directive来封装DOM操作呢？&lt;br&gt;
-这是因为，为了实现View和ViewModel的分离，我们必须封装DOM操作，View层负责页面上的显示，ViewModel层负责改变操作数据，由于Vue是数据驱动的，属于ViewModel层，那么其中就不应该出现View层上的DOM操作，所以DOM操作应该被封装在VueDirective里而不是出现在Vue实例中。 &lt;br&gt;&lt;/p&gt;
+这是因为，为了实现View和ViewModel的分离，我们必须封装DOM操作，View层负责页面上的显示，ViewModel层负责改变操作数据，由于Vue是数据驱动的，属于ViewModel层，那么其中就不应该出现View层上的DOM操作，而且，使用Vue Directive是和DOM元素的创建、销毁绑定的。Vue Directive的生命周期方法能让我们更优雅的去在合适的时机进行DOM的操作。而在ViewModel里则没有和DOM元素对应的方法。因为Vue Directive是属于View层面的，所以DOM操作应该被封装在Vue Directive里而不是出现在Vue实例中。 &lt;br&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;3-demo-自制scroll指令-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3. Demo：自制scroll指令 &lt;br&gt;&lt;/h2&gt;
 
-&lt;p&gt;接下来看一个具体使用VueDirective封装dom的scroll事件的例子，在这个例子中需求是在用户滑动到页面的底端时请求下一个页面。&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;接下来看一个具体使用Vue Directive封装DOM操作的scroll事件的例子，在这个例子中需求是在用户滑动到页面的底端时请求更多数据。&lt;br&gt;&lt;/p&gt;
 
 &lt;h3 id=&#34;3-1-首先将dom操作封装到指令的option中-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.1 首先将DOM操作封装到指令的option中 &lt;br&gt;&lt;/h3&gt;
 
@@ -81,12 +81,15 @@ vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
         &lt;span class=&#34;nx&#34;&gt;callback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;callBackWarpped&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 新变量 保存引用&lt;/span&gt;
 &lt;span class=&#34;kr&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;default&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
     &lt;span class=&#34;nx&#34;&gt;bind&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;el&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;binding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;vnode&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;nb&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;addEventListener&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;quot;scroll&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;scrollCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;bind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;({},&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;binding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+        &lt;span class=&#34;nx&#34;&gt;callBackWarpped&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;  &lt;span class=&#34;nx&#34;&gt;scrollCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;bind&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;({},&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;binding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;value&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;nb&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;addEventListener&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;quot;scroll&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;callBackWarpped&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
     &lt;span class=&#34;nx&#34;&gt;unbind&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-        &lt;span class=&#34;nb&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;removeEventListener&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;quot;scroll&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;scrollCallback&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;nb&#34;&gt;window&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;removeEventListener&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;quot;scroll&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;callBackWarpped&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -126,11 +129,11 @@ vue提供了两中注册方法，一种是全局注册&lt;/p&gt;
 
 &lt;h3 id=&#34;3-5-编写directive指令中的函数-br:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;3.5 编写directive指令中的函数&lt;br&gt;&lt;/h3&gt;
 
-&lt;p&gt;最后在method中编写onScroll函数，也就是上文中对应的binding.value，vue会执行相应v-scroll中的值。 &lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;最后在method中编写onScroll函数，也就是上文中对应的binding.value，在这个函数中我们将会请求更多数据，而Vue就会执行相应v-scroll中的值。 &lt;br&gt;&lt;br&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;具体的Demo效果请戳&lt;a href=&#34;https://elegenthus.github.io/scrollDemo/&#34;&gt;这里&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;具体的Demo请戳&lt;a href=&#34;https://github.com/Elegenthus/scrollDemo/tree/gh-pages&#34;&gt;这里&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

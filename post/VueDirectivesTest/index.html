@@ -42,16 +42,16 @@
   <section class="body" itemprop="articleBody">
     
 
-<h1 id="使用vuedirective封装dom操作:8fb70ceb80e0e159e41b00203ce25900">使用VueDirective封装Dom操作</h1>
+<h1 id="使用vue-directive封装dom操作:8fb70ceb80e0e159e41b00203ce25900">使用Vue Directive封装DOM操作</h1>
 
 <p>这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子</p>
 
 <hr />
 
-<h2 id="1-vuedirective的简介-br:8fb70ceb80e0e159e41b00203ce25900">1.VueDirective的简介 <br></h2>
+<h2 id="1-vue-directive的简介-br:8fb70ceb80e0e159e41b00203ce25900">1.Vue Directive的简介 <br></h2>
 
-<p>directive在vue中十分常见，vue提供的许多指令如v-on、v-show使得vue的功能更加强大，可是仍然有一些操作指令是vue没有提供的，不过vue提供了自定义directive的属性方法来满足这一需求。<br>
-vue提供了两中注册方法，一种是全局注册</p>
+<p>directive在Vue中十分常见，Vue提供的许多指令如 <code>v-on</code> 、 <code>v-show</code> 使得Vue的功能更加强大，可是仍然有一些操作指令是Vue没有提供的，不过Vue提供了自定义directive的属性方法来满足这一需求。其实，Vue Directive就是一种特殊的HTML元素属性<br>
+Vue提供了两中注册方法，一种是全局注册</p>
 
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>    <span class="nx">Vue</span><span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">&#39;指令的名字&#39;</span><span class="p">,</span> <span class="p">{</span>
         <span class="c1">//一些option，提供许多hook function 定义directive的具体操作，如inserted、bind...</span>
@@ -65,14 +65,14 @@ vue提供了两中注册方法，一种是全局注册</p>
 <p>另一种是局部注册，在相对应的组件中定义directive，指令的具体的操作将在相应对象中编写</p>
 
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">directives</span><span class="o">:</span> <span class="p">{</span>
-  <span class="nx">指令的名字</span><span class="o">:</span> <span class="p">{</span>
+  <span class="nx">name</span><span class="o">:</span> <span class="p">{</span>  <span class="c1">//指令的名字</span>
     <span class="c1">// 指令的定义</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 
 
-<p>在定义时，vue提供了许多hook function，例如inserted、bind等，bind是只会在绑定的对象节点被插入父节点时调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。<br></p>
+<p>在定义时，Vue提供了许多hook function，例如inserted、bind等，bind是只会在绑定的对象节点被插入父节点时调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。<br></p>
 
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">Vue</span><span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">&#39;指令的名字&#39;</span><span class="p">,</span> <span class="p">{</span>
     <span class="nx">bind</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">el</span><span class="p">,</span> <span class="nx">binding</span><span class="p">,</span> <span class="nx">vnode</span><span class="err">，</span><span class="nx">oldVnode</span><span class="p">)</span> <span class="p">{</span>
@@ -85,16 +85,16 @@ vue提供了两中注册方法，一种是全局注册</p>
 </code></pre></div>
 
 
-<p>bind函数中的binding，是一个包含了众多性质的对象，关于它的所有的性质的介绍可以自行查看<a href="https://vuejs.org/v2/guide/custom-directive.html">官方文档</a> ,比较常用的一个属性binding.value，其对应的是在元素中被传给directive的值，vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则不会被解析执行<br></p>
+<p>bind函数中的binding，是一个包含了众多属性的对象，关于它的所有的性质的介绍可以自行查看<a href="https://vuejs.org/v2/guide/custom-directive.html">官方文档</a> ,比较常用的一个属性binding.value，与其对应的是在指令中传入的字符串，Vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则就是原始值<br></p>
 
 <h2 id="2-为什么要使用vuedirective-br:8fb70ceb80e0e159e41b00203ce25900">2.为什么要使用VueDirective <br></h2>
 
 <p>有同学可能会问，我在Vue实例的方法中写DOM操作不可以吗？那为什么使用Vue Directive来封装DOM操作呢？<br>
-这是因为，为了实现View和ViewModel的分离，我们必须封装DOM操作，View层负责页面上的显示，ViewModel层负责改变操作数据，由于Vue是数据驱动的，属于ViewModel层，那么其中就不应该出现View层上的DOM操作，所以DOM操作应该被封装在VueDirective里而不是出现在Vue实例中。 <br></p>
+这是因为，为了实现View和ViewModel的分离，我们必须封装DOM操作，View层负责页面上的显示，ViewModel层负责改变操作数据，由于Vue是数据驱动的，属于ViewModel层，那么其中就不应该出现View层上的DOM操作，而且，使用Vue Directive是和DOM元素的创建、销毁绑定的。Vue Directive的生命周期方法能让我们更优雅的去在合适的时机进行DOM的操作。而在ViewModel里则没有和DOM元素对应的方法。因为Vue Directive是属于View层面的，所以DOM操作应该被封装在Vue Directive里而不是出现在Vue实例中。 <br></p>
 
 <h2 id="3-demo-自制scroll指令-br:8fb70ceb80e0e159e41b00203ce25900">3. Demo：自制scroll指令 <br></h2>
 
-<p>接下来看一个具体使用VueDirective封装dom的scroll事件的例子，在这个例子中需求是在用户滑动到页面的底端时请求下一个页面。<br></p>
+<p>接下来看一个具体使用Vue Directive封装DOM操作的scroll事件的例子，在这个例子中需求是在用户滑动到页面的底端时请求更多数据。<br></p>
 
 <h3 id="3-1-首先将dom操作封装到指令的option中-br:8fb70ceb80e0e159e41b00203ce25900">3.1 首先将DOM操作封装到指令的option中 <br></h3>
 
@@ -106,12 +106,15 @@ vue提供了两中注册方法，一种是全局注册</p>
         <span class="nx">callback</span><span class="p">()</span>
     <span class="p">}</span>
 <span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">callBackWarpped</span> <span class="c1">// 新变量 保存引用</span>
 <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
     <span class="nx">bind</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">el</span><span class="p">,</span> <span class="nx">binding</span><span class="p">,</span> <span class="nx">vnode</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;scroll&quot;</span><span class="p">,</span> <span class="nx">scrollCallback</span><span class="p">.</span><span class="nx">bind</span><span class="p">({},</span> <span class="nx">binding</span><span class="p">.</span><span class="nx">value</span><span class="p">))</span>
+        <span class="nx">callBackWarpped</span> <span class="o">=</span>  <span class="nx">scrollCallback</span><span class="p">.</span><span class="nx">bind</span><span class="p">({},</span> <span class="nx">binding</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;scroll&quot;</span><span class="p">,</span> <span class="nx">callBackWarpped</span><span class="p">)</span>
     <span class="p">},</span>
     <span class="nx">unbind</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-        <span class="nb">window</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s2">&quot;scroll&quot;</span><span class="p">,</span> <span class="nx">scrollCallback</span><span class="p">)</span>
+        <span class="nb">window</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s2">&quot;scroll&quot;</span><span class="p">,</span> <span class="nx">callBackWarpped</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -151,11 +154,11 @@ vue提供了两中注册方法，一种是全局注册</p>
 
 <h3 id="3-5-编写directive指令中的函数-br:8fb70ceb80e0e159e41b00203ce25900">3.5 编写directive指令中的函数<br></h3>
 
-<p>最后在method中编写onScroll函数，也就是上文中对应的binding.value，vue会执行相应v-scroll中的值。 <br><br></p>
+<p>最后在method中编写onScroll函数，也就是上文中对应的binding.value，在这个函数中我们将会请求更多数据，而Vue就会执行相应v-scroll中的值。 <br><br></p>
 
 <hr />
 
-<p>具体的Demo效果请戳<a href="https://elegenthus.github.io/scrollDemo/">这里</a></p>
+<p>具体的Demo请戳<a href="https://github.com/Elegenthus/scrollDemo/tree/gh-pages">这里</a></p>
 
   </section>
 </article>
