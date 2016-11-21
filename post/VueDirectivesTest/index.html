@@ -42,61 +42,120 @@
   <section class="body" itemprop="articleBody">
     
 
-<h2 id="使用vuedirective封装dom操作:8fb70ceb80e0e159e41b00203ce25900">使用VueDirective封装Dom操作</h2>
+<h1 id="使用vuedirective封装dom操作:8fb70ceb80e0e159e41b00203ce25900">使用VueDirective封装Dom操作</h1>
 
 <p>这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子</p>
 
-<p>##1.为什么要使用VueDirective <br><br>
-由于业务需求的不同，有时候我们需要自己编写vue指令，在里面不可避免地会出现一些dom操作，为了实现View和ViewModel的分离，我们必须封装dom操作，于是我们需要VueDirective。 <br><br>
-##2.VueDirective的简介 <br><br>
-除了在相关组件中引入directive的指令之外，我们还需要在定义这个directive的操作，vue给我们提供了许多Hook Functions，以便于我们对directive的对象进行具体的操作。<br><br />
-例如bind，bind是只会在被绑定的对象节点被插入父节点时被调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。<br>
-bind函数中会提供像el,binding,vnode,oldVnode这样一些形参，这里我们具体看一下binding<br><br>
-binding是一个包含了众多性质的对象，关于它的所有的性质的介绍可以自行查看<a href="https://vuejs.org/v2/guide/custom-directive.html">官方文档</a> ,比较常用的一个属性binding.value，其对应的是在元素中被传给directive的值，vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则不会被解析执行<br>
-<br></p>
+<hr />
 
-<p>##3.怎样使用VueDirective <br><br>
-接下来我们来看一个具体使用VueDirective封装dom的scroll事件的例子，在这个例子中我们想要在用户滑动到页面的底端时发请求，请求下一个页面。<br>
-###1.首先我们需要一个包含dom操作的scroll.js <br></p>
+<h2 id="1-vuedirective的简介-br:8fb70ceb80e0e159e41b00203ce25900">1.VueDirective的简介 <br></h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+<p>directive在vue中十分常见，vue提供的许多指令如v-on、v-show使得vue的功能更加强大，可是仍然有一些操作指令是vue没有提供的，不过vue提供了自定义directive的属性方法来满足这一需求。<br>
+vue提供了两中注册方法，一种是全局注册</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span>    <span class="nx">Vue</span><span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">&#39;指令的名字&#39;</span><span class="p">,</span> <span class="p">{</span>
+        <span class="c1">//一些option，提供许多hook function 定义directive的具体操作，如inserted、bind...</span>
+        <span class="nx">inserted</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">el</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">//指令插入元素后的操作</span>
+        <span class="p">}</span>
+    <span class="p">})</span>
+</code></pre></div>
+
+
+<p>另一种是局部注册，在相对应的组件中定义directive，指令的具体的操作将在相应对象中编写</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">directives</span><span class="o">:</span> <span class="p">{</span>
+  <span class="nx">指令的名字</span><span class="o">:</span> <span class="p">{</span>
+    <span class="c1">// 指令的定义</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<p>在定义时，vue提供了许多hook function，例如inserted、bind等，bind是只会在绑定的对象节点被插入父节点时调用一次的函数，与unbind相对应，unbind将也只会在元素被解除绑定时调用。<br></p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">Vue</span><span class="p">.</span><span class="nx">directive</span><span class="p">(</span><span class="s1">&#39;指令的名字&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">bind</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">el</span><span class="p">,</span> <span class="nx">binding</span><span class="p">,</span> <span class="nx">vnode</span><span class="err">，</span><span class="nx">oldVnode</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//绑定指令时调用</span>
+    <span class="p">},</span>
+    <span class="nx">unbind</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//指令解除绑定时调用</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+</code></pre></div>
+
+
+<p>bind函数中的binding，是一个包含了众多性质的对象，关于它的所有的性质的介绍可以自行查看<a href="https://vuejs.org/v2/guide/custom-directive.html">官方文档</a> ,比较常用的一个属性binding.value，其对应的是在元素中被传给directive的值，vue会自动解析这个值并执行。与此相对应的另一个属性binding.expression里的值则不会被解析执行<br></p>
+
+<h2 id="2-为什么要使用vuedirective-br:8fb70ceb80e0e159e41b00203ce25900">2.为什么要使用VueDirective <br></h2>
+
+<p>有同学可能会问，我在Vue实例的方法中写DOM操作不可以吗？那为什么使用Vue Directive来封装DOM操作呢？<br>
+这是因为，为了实现View和ViewModel的分离，我们必须封装DOM操作，View层负责页面上的显示，ViewModel层负责改变操作数据，由于Vue是数据驱动的，属于ViewModel层，那么其中就不应该出现View层上的DOM操作，所以DOM操作应该被封装在VueDirective里而不是出现在Vue实例中。 <br></p>
+
+<h2 id="3-demo-自制scroll指令-br:8fb70ceb80e0e159e41b00203ce25900">3. Demo：自制scroll指令 <br></h2>
+
+<p>接下来看一个具体使用VueDirective封装dom的scroll事件的例子，在这个例子中需求是在用户滑动到页面的底端时请求下一个页面。<br></p>
+
+<h3 id="3-1-首先将dom操作封装到指令的option中-br:8fb70ceb80e0e159e41b00203ce25900">3.1 首先将DOM操作封装到指令的option中 <br></h3>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kd">let</span> <span class="nx">scrollCallback</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">scrollHeight</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">scrollHeight</span> <span class="o">-</span> <span class="nb">window</span><span class="p">.</span><span class="nx">scrollY</span> <span class="o">-</span> <span class="mi">100</span> <span class="o">&lt;=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">clientHeight</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">callback</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
     <span class="nx">bind</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">el</span><span class="p">,</span> <span class="nx">binding</span><span class="p">,</span> <span class="nx">vnode</span><span class="p">)</span> <span class="p">{</span>
         <span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;scroll&quot;</span><span class="p">,</span> <span class="nx">scrollCallback</span><span class="p">.</span><span class="nx">bind</span><span class="p">({},</span> <span class="nx">binding</span><span class="p">.</span><span class="nx">value</span><span class="p">))</span>
     <span class="p">},</span>
-
     <span class="nx">unbind</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
         <span class="nb">window</span><span class="p">.</span><span class="nx">removeEventListener</span><span class="p">(</span><span class="s2">&quot;scroll&quot;</span><span class="p">,</span> <span class="nx">scrollCallback</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
+</p>
 
+<p>首先需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，由于在解除绑定的时候也要将监听事件从window上移除，所以必须给回调函数取一个名字，例如本例中的scrollCallback，并在unbind函数中将监听移除，因此scrollCallBack的具体定义应在对象外执行。<br>
+并且回调函数应该在页面滑动到底端时才执行，也就是说不能马上执行binding.value，怎样实现这一点呢？可以将bind.value作为函数的参数callback传进scrollCallback，先判断，然后在满足条件时调用binding.value <br></p>
 
-<p>在这个scroll.js中我们需要监听页面的滚动，如果触发了scroll事件那么就要执行回调函数，在解除绑定的时候也要将监听事件从window上移除，所以我们必须给回调函数取一个名字scrollCallback，在unbind函数中将监听移除。但是由于我们还希望滑动到页面底端再发请求，也就是说不能马上执行binding.value，怎样实现这一点呢？我们把scrollCallback函数的具体内容写在对象外面，将bind.value作为函数的参数传进scrollCallback，在满足条件时调用binding.value <br>
-###2.在组件里import进这个directive <br></p>
+<h3 id="3-2-在组件里import一个directive-br:8fb70ceb80e0e159e41b00203ce25900">3.2 在组件里import一个directive <br></h3>
 
 <p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">import</span> <span class="nx">scrollDirective</span> <span class="nx">from</span> <span class="s1">&#39;../../directives/scroll&#39;</span>
+<span class="c1">//import 指令的option的名字 from &#39;指令option的位置&#39;</span>
 </code></pre></div>
 </p>
 
-<p>使用import将directive引入组件 <br>
-###3.在组件的directives中注册scroll</p>
+<p>使用import将directive引入组件 <br></p>
+
+<h3 id="3-3-在组件的directives属性中注册这个指令-值为scroll:8fb70ceb80e0e159e41b00203ce25900">3.3 在组件的directives属性中注册这个指令，值为scroll</h3>
 
 <p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">directives</span><span class="o">:</span> <span class="p">{</span>
     <span class="nx">scroll</span><span class="o">:</span> <span class="nx">scrollDirective</span>
+    <span class="c1">//指令的名字:指令的option的名字</span>
 <span class="p">},</span>
 </code></pre></div>
 </p>
 
-<p>将引入的组件注册到scroll上 <br>
-###4.在元素上加上directive指令<br></p>
+<p>将引入的组件注册到scroll上 <br></p>
+
+<h3 id="3-4-在相应元素上加上directive指令-br:8fb70ceb80e0e159e41b00203ce25900">3.4 在相应元素上加上directive指令<br></h3>
 
 <p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">v</span><span class="o">-</span><span class="nx">scroll</span> <span class="o">=</span> <span class="s2">&quot;onScroll&quot;</span>
+<span class="c1">//v-&#39;指令的名字&#39; = &quot;回调函数&quot;</span>
 </code></pre></div>
 </p>
 
-<p>用注册好的名字在相对应的元素上加入指令 <br>
-###5.编写directive指令中的函数<br>
-最后在method中编写onScroll函数，也就是上文中对应的binding.value，vue会执行相应v-scroll中的值。 <br></p>
+<p>用注册好的名字在相对应的元素上加入指令 <br></p>
+
+<h3 id="3-5-编写directive指令中的函数-br:8fb70ceb80e0e159e41b00203ce25900">3.5 编写directive指令中的函数<br></h3>
+
+<p>最后在method中编写onScroll函数，也就是上文中对应的binding.value，vue会执行相应v-scroll中的值。 <br><br></p>
+
+<hr />
+
+<p>具体的Demo效果请戳<a href="https://elegenthus.github.io/scrollDemo/">这里</a></p>
 
   </section>
 </article>
