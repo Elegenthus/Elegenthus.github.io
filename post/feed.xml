@@ -10,14 +10,12 @@
     <atom:link href="https://Elegenthus.github.io/post/feed/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>VueDirectivesTest</title>
+      <title>使用Vue Directive封装DOM操作</title>
       <link>https://elegenthus.github.io/post/VueDirectivesTest/</link>
       <pubDate>Sun, 20 Nov 2016 16:19:56 +0800</pubDate>
       
       <guid>https://elegenthus.github.io/post/VueDirectivesTest/</guid>
       <description>
-
-&lt;h1 id=&#34;使用vue-directive封装dom操作:8fb70ceb80e0e159e41b00203ce25900&#34;&gt;使用Vue Directive封装DOM操作&lt;/h1&gt;
 
 &lt;p&gt;这篇文章是关于Vue Directive的介绍，后面会介绍一个使用的小例子。&lt;/p&gt;
 
