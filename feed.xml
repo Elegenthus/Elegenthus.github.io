@@ -15,16 +15,21 @@
       <pubDate>Tue, 20 Dec 2016 18:39:58 +0800</pubDate>
       
       <guid>https://elegenthus.github.io/post/svg/</guid>
-      <description>&lt;p&gt;最近在写项目的时候，碰到页面上一些高清图标需要用svg格式引入，这篇文章将会总结一下怎样在页面中使用SVG图标。&lt;/p&gt;
+      <description>
 
-&lt;p&gt;##SVG的简介
-SVG是一种可缩放矢量图形（英语：Scalable Vector Graphics，SVG）是基于可扩展标记语言（XML），用于描述二维矢量图形的图形格式。SVG由W3C制定，是一个开放标准。
+&lt;p&gt;最近在写项目的时候，碰到页面上一些高清图标需要用svg格式引入，这篇文章将会总结一下怎样在页面中使用SVG图标。&lt;/p&gt;
+
+&lt;h2 id=&#34;svg的简介:71678e3b902faa943f79c02db17483db&#34;&gt;SVG的简介&lt;/h2&gt;
+
+&lt;p&gt;SVG是一种可缩放矢量图形（英语：Scalable Vector Graphics，SVG）是基于可扩展标记语言（XML），用于描述二维矢量图形的图形格式。SVG由W3C制定，是一个开放标准。
 简单的理解它是图形的另一种格式，例如它和常见的图片格式.png、.jpg、.gif等是一类。
 关于SVG的一些具体的使用示例可以戳这篇&lt;a href=&#34;https://aotu.io/notes/2016/11/22/SVG_Web_Animation/&#34;&gt;三看 SVG Web 动效&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;##在页面中引入SVG图标
-###对SVG进行“瘦身”
-在拿到设计师给的SVG图片之后，我们先对它进行一点小小的修改，保留&lt;code&gt;svg&lt;/code&gt;标签内的&lt;code&gt;viewBox&lt;/code&gt;属性，以及路径&lt;code&gt;path&lt;/code&gt;的代码段，并用模板标签&lt;code&gt;symbol&lt;/code&gt;来替换&lt;code&gt;svg&lt;/code&gt;标签，得到的效果大致如下&lt;/p&gt;
+&lt;h2 id=&#34;在页面中引入svg图标:71678e3b902faa943f79c02db17483db&#34;&gt;在页面中引入SVG图标&lt;/h2&gt;
+
+&lt;h3 id=&#34;对svg进行-瘦身:71678e3b902faa943f79c02db17483db&#34;&gt;对SVG进行“瘦身”&lt;/h3&gt;
+
+&lt;p&gt;在拿到设计师给的SVG图片之后，我们先对它进行一点小小的修改，保留&lt;code&gt;svg&lt;/code&gt;标签内的&lt;code&gt;viewBox&lt;/code&gt;属性，以及路径&lt;code&gt;path&lt;/code&gt;的代码段，并用模板标签&lt;code&gt;symbol&lt;/code&gt;来替换&lt;code&gt;svg&lt;/code&gt;标签，得到的效果大致如下&lt;/p&gt;
 
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-html&#34; data-lang=&#34;html&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;svg&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;style&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;display: none&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;symbol&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;viewBox&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;0 0 145.5 121.5&amp;quot;&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;share&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt;
@@ -35,15 +40,19 @@ SVG是一种可缩放矢量图形（英语：Scalable Vector Graphics，SVG）�
 
 
 &lt;p&gt;然后将其插进html页面中的&lt;code&gt;svg&lt;/code&gt;标签内，你可以为svg标签设置内联样式&lt;code&gt;display: none&lt;/code&gt;这样它就不会在页面中显示了
-对了，不要忘记在&lt;code&gt;symbol&lt;/code&gt;标签内添加相应的id属性，方便在页面中相应位置进行引用
-###在相应位置以&lt;code&gt;svg&lt;/code&gt;标签引入SVG
-用&lt;code&gt;use&lt;/code&gt;引用上文中的&lt;code&gt;symbol&lt;/code&gt;集合，&lt;code&gt;xlink:href&lt;/code&gt; 属性指定引用的&lt;code&gt;id&lt;/code&gt;&lt;/p&gt;
+对了，不要忘记在&lt;code&gt;symbol&lt;/code&gt;标签内添加相应的id属性，方便在页面中相应位置进行引用&lt;/p&gt;
+
+&lt;h3 id=&#34;在相应位置以-code-svg-code-标签引入svg:71678e3b902faa943f79c02db17483db&#34;&gt;在相应位置以&lt;code&gt;svg&lt;/code&gt;标签引入SVG&lt;/h3&gt;
+
+&lt;p&gt;用&lt;code&gt;use&lt;/code&gt;引用上文中的&lt;code&gt;symbol&lt;/code&gt;集合，&lt;code&gt;xlink:href&lt;/code&gt; 属性指定引用的&lt;code&gt;id&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-html&#34; data-lang=&#34;html&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;svg&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;viewBox&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;0 0 200 200&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt;
     &lt;span class=&#34;p&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;use&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;xmlns:xlink&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;http://www.w3.org/1999/xlink&amp;quot;&lt;/span&gt; &lt;span class=&#34;na&#34;&gt;xlink:href&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;quot;#commit&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;use&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt;
 &lt;span class=&#34;p&#34;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;svg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/p&gt;
+
+&lt;p&gt;以上就是在页面中引入SVG的总结。&lt;/p&gt;
 </description>
     </item>
     
