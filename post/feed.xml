@@ -21,7 +21,7 @@
 
 &lt;h2 id=&#34;svg的简介:71678e3b902faa943f79c02db17483db&#34;&gt;SVG的简介&lt;/h2&gt;
 
-&lt;p&gt;SVG是一种可缩放矢量图形（英语：Scalable Vector Graphics，SVG）是基于可扩展标记语言（XML），用于描述二维矢量图形的图形格式。SVG由W3C制定，是一个开放标准。
+&lt;p&gt;SVG是一种可缩放矢量图形（英语：Scalable Vector Graphics，SVG）是基于可扩展标记语言（XML），用于描述二维矢量图形的图形格式。SVG由W3C制定，是一个开放标准。&lt;br&gt;
 简单的理解它是图形的另一种格式，例如它和常见的图片格式.png、.jpg、.gif等是一类。
 关于SVG的一些具体的使用示例可以戳这篇&lt;a href=&#34;https://aotu.io/notes/2016/11/22/SVG_Web_Animation/&#34;&gt;三看 SVG Web 动效&lt;/a&gt;&lt;/p&gt;
 
@@ -39,7 +39,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;然后将其插进html页面中的&lt;code&gt;svg&lt;/code&gt;标签内，你可以为svg标签设置内联样式&lt;code&gt;display: none&lt;/code&gt;这样它就不会在页面中显示了
+&lt;p&gt;然后将其插进html页面中的&lt;code&gt;svg&lt;/code&gt;标签内，你可以为svg标签设置内联样式&lt;code&gt;display: none&lt;/code&gt;这样它就不会在页面中显示了&lt;br&gt;
 对了，不要忘记在&lt;code&gt;symbol&lt;/code&gt;标签内添加相应的id属性，方便在页面中相应位置进行引用&lt;/p&gt;
 
 &lt;h3 id=&#34;在相应位置以-code-svg-code-标签引入svg:71678e3b902faa943f79c02db17483db&#34;&gt;在相应位置以&lt;code&gt;svg&lt;/code&gt;标签引入SVG&lt;/h3&gt;
