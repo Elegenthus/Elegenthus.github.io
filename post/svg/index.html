@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.15" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://Elegenthus.github.io/css/style.css" type="text/css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" type="text/css">
+<link rel="alternate" href="https://Elegenthus.github.io/index.xml" type="application/rss+xml" title="Elegenthus&#39;s blog">
+<title>如何在页面中引入SVG图标 - Elegenthus&#39;s blog</title>
+</head>
+<body>
+
+<header>
+  <div class="container clearfix">
+    <a class="path" href="https://elegenthus.github.io/">[Elegenthus&#39;s blog]</a>
+    <span class="caret">((^∀^*))</span>
+    <div class="right">
+      
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+
+<main role="main" class="article">
+  
+<article class="single" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="meta">
+
+    <span class="key">published on</span>
+    <span class="val"><time itemprop="datePublished" datetime="2016-12-20">December 20, 2016</time></span>
+
+
+
+  </div>
+  <h1 class="headline" itemprop="headline">如何在页面中引入SVG图标</h1>
+  <section class="body" itemprop="articleBody">
+    <p>最近在写项目的时候，碰到页面上一些高清图标需要用svg格式引入，这篇文章将会总结一下怎样在页面中使用SVG图标。</p>
+
+<p>##SVG的简介
+SVG是一种可缩放矢量图形（英语：Scalable Vector Graphics，SVG）是基于可扩展标记语言（XML），用于描述二维矢量图形的图形格式。SVG由W3C制定，是一个开放标准。
+简单的理解它是图形的另一种格式，例如它和常见的图片格式.png、.jpg、.gif等是一类。
+关于SVG的一些具体的使用示例可以戳这篇<a href="https://aotu.io/notes/2016/11/22/SVG_Web_Animation/">三看 SVG Web 动效</a></p>
+
+<p>##在页面中引入SVG图标
+###对SVG进行“瘦身”
+在拿到设计师给的SVG图片之后，我们先对它进行一点小小的修改，保留<code>svg</code>标签内的<code>viewBox</code>属性，以及路径<code>path</code>的代码段，并用模板标签<code>symbol</code>来替换<code>svg</code>标签，得到的效果大致如下</p>
+
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="p">&lt;</span><span class="nt">svg</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;display: none&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">symbol</span> <span class="na">viewBox</span><span class="o">=</span><span class="s">&quot;0 0 145.5 121.5&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;share&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">path</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;st0&quot;</span> <span class="na">d</span><span class="o">=</span><span class="s">&quot;M88.9,0l56.6,56.7l-56.6,56.7V81c0,0-56.1-6.2-88.9,40.5c0,0,10.3-89.1,88.9-89.1V0z&quot;</span> <span class="p">/&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">symbol</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">svg</span><span class="p">&gt;</span>
+</code></pre></div>
+
+
+<p>然后将其插进html页面中的<code>svg</code>标签内，你可以为svg标签设置内联样式<code>display: none</code>这样它就不会在页面中显示了
+对了，不要忘记在<code>symbol</code>标签内添加相应的id属性，方便在页面中相应位置进行引用
+###在相应位置以<code>svg</code>标签引入SVG
+用<code>use</code>引用上文中的<code>symbol</code>集合，<code>xlink:href</code> 属性指定引用的<code>id</code></p>
+
+<p><div class="highlight"><pre><code class="language-html" data-lang="html"><span></span><span class="p">&lt;</span><span class="nt">svg</span> <span class="na">viewBox</span><span class="o">=</span><span class="s">&quot;0 0 200 200&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">use</span> <span class="na">xmlns:xlink</span><span class="o">=</span><span class="s">&quot;http://www.w3.org/1999/xlink&quot;</span> <span class="na">xlink:href</span><span class="o">=</span><span class="s">&quot;#commit&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">use</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">svg</span><span class="p">&gt;</span>
+</code></pre></div>
+</p>
+
+  </section>
+</article>
+
+</main>
+
+
+</div>
+
+<footer>
+  <div class="container">
+    <span class="copyright">&copy; 2016  Elegenthus&#39;s blog - <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
+
