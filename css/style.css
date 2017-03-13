@@ -423,12 +423,12 @@ article.single tr:last-child td {
 }
 
 article.single th {
-  text-align: left;
+  text-align: center;
   font-weight: bold;
   vertical-align: bottom;
 }
 
-article.single td { vertical-align: top }
+article.single td { vertical-align: middle; }
 
 article.single blockquote {
   margin-left: 32px;

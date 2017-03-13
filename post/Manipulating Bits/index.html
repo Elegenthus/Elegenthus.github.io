@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.15" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://Elegenthus.github.io/css/style.css" type="text/css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,700" type="text/css">
+<link rel="alternate" href="https://Elegenthus.github.io/index.xml" type="application/rss+xml" title="Elegenthus&#39;s blog">
+<title>Manipulating Bits - Elegenthus&#39;s blog</title>
+</head>
+<body>
+
+<header>
+  <div class="container clearfix">
+    <a class="path" href="https://elegenthus.github.io/">[Elegenthus&#39;s blog]</a>
+    <span class="caret">((^∀^*))</span>
+    <div class="right">
+      
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+
+<main role="main" class="article">
+  
+<article class="single" itemscope itemtype="http://schema.org/BlogPosting">
+  <div class="meta">
+
+    <span class="key">published on</span>
+    <span class="val"><time itemprop="datePublished" datetime="2017-03-13">March 13, 2017</time></span>
+
+
+
+  </div>
+  <h1 class="headline" itemprop="headline">Manipulating Bits</h1>
+  <section class="body" itemprop="articleBody">
+    
+
+<p>《深入了解计算机》第二章课后习题</p>
+
+<hr />
+
+<p>此次DataLab的目的呢，是通过编写一系列函数来熟悉整数、浮点数以及位操作。你会解决一系列的编程<code>puzzle</code>，在你思考的这个过程中，将对位操作有更深刻的理解。关于我的理解可戳<a href="https://github.com/Elegenthus/CSLab/blob/master/datalab-handout/bits.c">这里</a></p>
+
+<h2 id="任务目标:f6cdf44a038c2d7cebd9122295ca2169">任务目标</h2>
+
+<p>首先来看我们需要解决的<code>puzzle</code>有哪些：</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">名称</th>
+<th align="center">描述</th>
+<th align="center">难度</th>
+<th align="center">指令数目</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">bitAnd(x,y)</td>
+<td align="center">只用|和 ~ 实现 x&amp;y</td>
+<td align="center">1</td>
+<td align="center">8</td>
+</tr>
+
+<tr>
+<td align="center">getByte(x,n)</td>
+<td align="center">从数x中提取第n个字节</td>
+<td align="center">2</td>
+<td align="center">6</td>
+</tr>
+
+<tr>
+<td align="center">logicalShift(x,n)</td>
+<td align="center">将数x逻辑右移n位</td>
+<td align="center">3</td>
+<td align="center">20</td>
+</tr>
+
+<tr>
+<td align="center">bitCount(x)</td>
+<td align="center">返回二进制数中1的个数</td>
+<td align="center">4</td>
+<td align="center">40</td>
+</tr>
+
+<tr>
+<td align="center">bang(x)</td>
+<td align="center">不使用!而计算!x</td>
+<td align="center">4</td>
+<td align="center">12</td>
+</tr>
+
+<tr>
+<td align="center">tmin()</td>
+<td align="center">返回所能表示的最小整数</td>
+<td align="center">1</td>
+<td align="center">4</td>
+</tr>
+
+<tr>
+<td align="center"><em>fitsBits(x,n)</em></td>
+<td align="center">如果x可以表示为n位二<br>进制补码形式,则返回1</td>
+<td align="center">2</td>
+<td align="center">15</td>
+</tr>
+
+<tr>
+<td align="center">divpwr2(x,n)</td>
+<td align="center">计算x/(2^n)</td>
+<td align="center">2</td>
+<td align="center">15</td>
+</tr>
+
+<tr>
+<td align="center">negate(x)</td>
+<td align="center">返回-x</td>
+<td align="center">2</td>
+<td align="center">5</td>
+</tr>
+
+<tr>
+<td align="center">isPositive(x)</td>
+<td align="center">x&gt;0返回1,x&lt;=0返回0</td>
+<td align="center">3</td>
+<td align="center">8</td>
+</tr>
+
+<tr>
+<td align="center">isLessOrEqual(x,y)</td>
+<td align="center">x&lt;=y返回1否则返回0</td>
+<td align="center">3</td>
+<td align="center">24</td>
+</tr>
+
+<tr>
+<td align="center">ilog2(x)</td>
+<td align="center">返回不超过以2为底<br>x对数的最小整数</td>
+<td align="center">4</td>
+<td align="center">90</td>
+</tr>
+
+<tr>
+<td align="center">float_neg(uf)</td>
+<td align="center">返回和浮点数参数-f相<br>等的二进制数，返回参<br>数本身当参数是NaN时</td>
+<td align="center">2</td>
+<td align="center">10</td>
+</tr>
+
+<tr>
+<td align="center">float_i2f(x)</td>
+<td align="center">实现(float)x，<br>返回x对应浮点数的<br>二进制表示形式</td>
+<td align="center">4</td>
+<td align="center">30</td>
+</tr>
+
+<tr>
+<td align="center">float_twice(uf)</td>
+<td align="center">返回以unsinged表<br>示的浮点数二倍<br>的二进制形式</td>
+<td align="center">4</td>
+<td align="center">30</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="上手指南:f6cdf44a038c2d7cebd9122295ca2169">上手指南</h2>
+
+<p>首先，一共有15个需要补充的函数，全部在bits.c文件中进行编写</p>
+
+<ul>
+<li>运行 <code>make btest</code> 编译函数</li>
+<li>使用 <code>dlc compiler (./dlc)</code> 自动检测你的代码是否符合规定</li>
+<li>运行 <code>./btest</code> 检测函数是否编写成功</li>
+<li>使用 <code>./ishow n</code> 查看n的十六进制，有符号整型和无符号整型形式</li>
+<li>使用 <code>./fshow n</code> 查看n的浮点数表示形式</li>
+</ul>
+
+<h2 id="题目及其解法:f6cdf44a038c2d7cebd9122295ca2169">题目及其解法</h2>
+
+<h3 id="bitand-x-y:f6cdf44a038c2d7cebd9122295ca2169">bitAnd(x,y)</h3>
+
+<ul>
+<li>题目要求 ：只用 | 和 ~ 实现 x&amp;y</li>
+<li>允许操作：~ |</li>
+<li>操作数限制：8</li>
+<li>分值：1</li>
+<li>使用样例：bitAnd(6, 5) = 4</li>
+</ul>
+
+<p>此题运用摩根定律可以解决 :</p>
+
+<p><code>x&amp;y = ~(~(x&amp;y)) = ~((~x)|(~y))</code></p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">bitAnd</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">,</span> <span class="kr">int</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="o">~</span><span class="p">((</span><span class="o">~</span><span class="nx">x</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="o">~</span><span class="nx">y</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<h3 id="getbyte-x-y:f6cdf44a038c2d7cebd9122295ca2169">getByte(x,y)</h3>
+
+<ul>
+<li>题目要求 ：从数x中提取从右数的第n个字节  <em>(0&lt;= n &lt;=3)</em></li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：6</li>
+<li>分值：2</li>
+<li>使用样例：getByte(0x12345678,1) = 0x56</li>
+</ul>
+
+<p>首先将x左移(3-n)个字节，赋给无符号整数m，其目的是将x左(3-n)个字节清零，再右移3个字节得到所需结果。
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">getByte</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">,</span> <span class="kr">int</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">unsigned</span> <span class="kr">int</span> <span class="nx">m</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&lt;&lt;</span> <span class="p">((</span><span class="mi">3</span> <span class="o">-</span> <span class="nx">n</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">);</span>
+  <span class="nx">m</span> <span class="o">=</span> <span class="nx">m</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="nx">m</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="logicalshift-x-n:f6cdf44a038c2d7cebd9122295ca2169">logicalShift(x,n)</h3>
+
+<ul>
+<li>题目要求 ：将数x逻辑右移n位  <em>(0 &lt;= n &lt;= 31)</em></li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：20</li>
+<li>分值：3</li>
+<li>使用样例：logicalShift(0x87654321,4) = 0x08765432</li>
+</ul>
+
+<p>此题与上一题类似，不同在于上一题以字节为单位进行，此题则以位为单位进行。需要注意的是，逻辑右移需要在最高位补0，所以先将x转换成无符号整型数。
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">logicalShift</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">,</span> <span class="kr">int</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">(</span><span class="nx">unsigned</span> <span class="kr">int</span><span class="p">)</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="nx">n</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="bitcount-x:f6cdf44a038c2d7cebd9122295ca2169">bitCount(x)</h3>
+
+<ul>
+<li>题目要求 ：返回二进制数中1的个数</li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：20</li>
+<li>分值：4</li>
+<li>使用样例：bitCount(5) = 2, bitCount(7) = 3</li>
+</ul>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">bitCount</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">//对于每四位，通过不停的移位运算将前三位的1加到第四位上</span>
+  <span class="kr">int</span> <span class="nx">i</span> <span class="o">=</span> <span class="mh">0x11111111</span><span class="p">,</span><span class="nx">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">x</span> <span class="o">&amp;</span> <span class="nx">i</span><span class="p">;</span>
+  <span class="nx">sum</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">i</span><span class="p">;</span>
+  <span class="nx">sum</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">i</span><span class="p">;</span>
+  <span class="nx">sum</span> <span class="o">+=</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">i</span><span class="p">;</span>
+
+  <span class="c1">//将前16位与后16位相加</span>
+  <span class="nx">i</span> <span class="o">=</span> <span class="mh">0xffff</span><span class="p">;</span>
+  <span class="nx">sum</span> <span class="o">=</span> <span class="p">(</span><span class="nx">sum</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">i</span> <span class="o">&amp;</span> <span class="nx">sum</span><span class="p">);</span>
+
+  <span class="c1">//整理每8位之和</span>
+  <span class="nx">i</span> <span class="o">=</span> <span class="mh">0x0f0f</span><span class="p">;</span>
+  <span class="nx">sum</span> <span class="o">=</span> <span class="p">((</span><span class="nx">sum</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">i</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">sum</span> <span class="o">&amp;</span> <span class="nx">i</span><span class="p">);</span>
+
+  <span class="c1">//将前8位与后8位相加</span>
+  <span class="nx">i</span> <span class="o">=</span> <span class="mh">0xff</span><span class="p">;</span>
+  <span class="nx">sum</span> <span class="o">=</span> <span class="p">(</span><span class="nx">sum</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">i</span> <span class="o">&amp;</span> <span class="nx">sum</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="nx">sum</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+<h3 id="bang-x:f6cdf44a038c2d7cebd9122295ca2169">bang(x)</h3>
+
+<ul>
+<li>题目要求 ：不使用!而计算!x</li>
+<li>允许操作：~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：12</li>
+<li>分值：4</li>
+<li>使用样例：bang(3) = 0, bang(0) = 1</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">bang</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">//求x的相反数，利用0的相反数还是0，非零的数与其相反数符号不同的性质</span>
+  <span class="kr">int</span> <span class="nx">opposite_x</span> <span class="o">=</span> <span class="o">~</span><span class="nx">x</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+  <span class="c1">//符号相同得到0，不同得到-1</span>
+  <span class="kr">int</span> <span class="nx">bits</span> <span class="o">=</span> <span class="p">(</span><span class="nx">opposite_x</span><span class="o">&gt;&gt;</span><span class="mi">31</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="nx">bits</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="tmin:f6cdf44a038c2d7cebd9122295ca2169">tmin()</h3>
+
+<ul>
+<li>题目要求 ：返回所能表示的最小整数</li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：4</li>
+<li>分值：1</li>
+<li>使用样例：tmin() = 0x10000000</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">tmin</span><span class="p">(</span><span class="k">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">31</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="fitsbits-x-n:f6cdf44a038c2d7cebd9122295ca2169">fitsBits(x,n)</h3>
+
+<ul>
+<li>题目要求 ：如果x可以表示为n位二进制补码形式,则返回1</li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：15</li>
+<li>分值：2</li>
+<li>使用样例：fitsBits(5,3) = 0, fitsBits(-4,3) = 1</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">fitsBits</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">,</span> <span class="kr">int</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">int</span> <span class="nx">c</span> <span class="o">=</span> <span class="o">~</span><span class="nx">n</span> <span class="o">+</span> <span class="mi">33</span><span class="p">;</span>
+  <span class="kr">int</span> <span class="nx">changedX</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&lt;&lt;</span> <span class="nx">c</span><span class="p">;</span>
+  <span class="kr">int</span> <span class="nx">changedY</span> <span class="o">=</span> <span class="nx">changedX</span><span class="o">&gt;&gt;</span> <span class="nx">c</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="o">!</span><span class="p">(</span><span class="nx">changedY</span> <span class="o">^</span> <span class="nx">x</span><span class="p">);</span> 
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="divpwr2-x-n:f6cdf44a038c2d7cebd9122295ca2169">divpwr2(x,n)</h3>
+
+<ul>
+<li>题目要求 ：计算x/(2^n)</li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：15</li>
+<li>分值：2</li>
+<li>使用样例：divpwr2(15,1) = 7, divpwr2(-33,4) = -2</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">divpwr2</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">,</span> <span class="kr">int</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">//取符号</span>
+  <span class="nx">unsigned</span> <span class="nx">t</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">;</span> 
+  <span class="kr">int</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="nx">n</span><span class="p">)</span> <span class="o">+</span> <span class="o">~</span><span class="mi">0</span><span class="p">;</span>
+  <span class="c1">//取后n位 </span>
+  <span class="kr">int</span> <span class="nx">tt</span> <span class="o">=</span> <span class="nx">tmp</span> <span class="o">&amp;</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="c1">//取后n位是否有数</span>
+  <span class="k">return</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="nx">n</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="o">!!</span><span class="nx">tt</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nx">t</span><span class="p">);</span>  
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="negate-x:f6cdf44a038c2d7cebd9122295ca2169">negate(x)</h3>
+
+<ul>
+<li>题目要求 ：返回-x</li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：5</li>
+<li>分值：2</li>
+<li>使用样例：negate(1) = -1.</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">negate</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="o">~</span><span class="nx">x</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="ispositive-x:f6cdf44a038c2d7cebd9122295ca2169">isPositive(x)</h3>
+
+<ul>
+<li>题目要求 ：x&gt;0返回1,x&lt;=0返回0</li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：8</li>
+<li>分值：3</li>
+<li>使用样例：isPositive(-1) = 0.</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">isPositive</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">unsigned</span> <span class="nx">m</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">31</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="o">!</span><span class="nx">m</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">!!</span><span class="nx">x</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="islessorequal-x-y:f6cdf44a038c2d7cebd9122295ca2169">isLessOrEqual(x,y)</h3>
+
+<ul>
+<li>题目要求 ：x&lt;=y返回1否则返回0</li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：24</li>
+<li>分值：3</li>
+<li>使用样例：isLessOrEqual(4,5) = 1</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">isLessOrEqual</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">,</span> <span class="kr">int</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">//x-y</span>
+  <span class="kr">int</span> <span class="nx">m</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="nx">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+  <span class="c1">//取x，y符号</span>
+  <span class="kr">int</span> <span class="nx">p</span> <span class="o">=</span> <span class="o">!!</span><span class="p">(</span><span class="nx">x</span><span class="o">&gt;&gt;</span><span class="mi">31</span><span class="p">);</span>
+  <span class="kr">int</span> <span class="nx">q</span> <span class="o">=</span> <span class="o">!!</span><span class="p">(</span><span class="nx">y</span><span class="o">&gt;&gt;</span><span class="mi">31</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="p">(</span><span class="o">!</span><span class="p">((</span><span class="nx">unsigned</span><span class="p">)</span><span class="nx">m</span><span class="o">&gt;&gt;</span><span class="mi">31</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">p</span><span class="o">^</span><span class="nx">q</span><span class="p">)))</span> <span class="o">|</span> <span class="p">(</span><span class="nx">p</span><span class="o">&amp;!</span><span class="nx">q</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="ilog2-x:f6cdf44a038c2d7cebd9122295ca2169">ilog2(x)</h3>
+
+<ul>
+<li>题目要求 ：返回不超过以2为底x对数的最小整数</li>
+<li>允许操作：! ~ &amp; ^ | + &lt;&lt; &gt;&gt;</li>
+<li>操作数限制：90</li>
+<li>分值：4</li>
+<li>使用样例：ilog2(16) = 4</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">ilog2</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">//记录最高位1的位置</span>
+  <span class="kr">int</span> <span class="nx">result1</span><span class="p">,</span><span class="nx">result2</span><span class="p">,</span><span class="nx">result3</span><span class="p">,</span><span class="nx">result4</span><span class="p">,</span><span class="nx">result5</span><span class="p">,</span><span class="nx">flag</span><span class="p">;</span>
+  <span class="c1">//判断高16位是否有1出现</span>
+  <span class="nx">flag</span> <span class="o">=</span> <span class="o">!!</span><span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">);</span>
+  <span class="c1">//出现1则确定最终结果数量级必然大于16</span>
+  <span class="nx">result1</span> <span class="o">=</span> <span class="nx">flag</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">;</span>
+  <span class="c1">//继续判断高8位是否有1出现，以此类推</span>
+  <span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="nx">result1</span><span class="p">;</span>
+
+  <span class="nx">flag</span> <span class="o">=</span> <span class="o">!!</span><span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">);</span>
+  <span class="nx">result2</span> <span class="o">=</span> <span class="nx">flag</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">;</span>
+  <span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="nx">result2</span><span class="p">;</span>
+
+  <span class="nx">flag</span> <span class="o">=</span> <span class="o">!!</span><span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">);</span>
+  <span class="nx">result3</span> <span class="o">=</span> <span class="nx">flag</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="nx">result3</span><span class="p">;</span>
+
+  <span class="nx">flag</span> <span class="o">=</span> <span class="o">!!</span><span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">);</span>
+  <span class="nx">result4</span> <span class="o">=</span> <span class="nx">flag</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="nx">result4</span><span class="p">;</span>
+
+  <span class="nx">flag</span> <span class="o">=</span> <span class="o">!!</span><span class="p">(</span><span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="nx">result5</span> <span class="o">=</span> <span class="nx">flag</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span> <span class="o">&gt;&gt;</span> <span class="nx">result5</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="nx">result5</span> <span class="o">+</span> <span class="nx">result4</span> <span class="o">+</span> <span class="nx">result3</span> <span class="o">+</span> <span class="nx">result2</span> <span class="o">+</span> <span class="nx">result1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="float-neg-uf:f6cdf44a038c2d7cebd9122295ca2169">float_neg(uf)</h3>
+
+<ul>
+<li>题目要求 ：返回和浮点数参数-f相等的二进制数，返回参数本身当参数是NaN时</li>
+<li>允许操作：包括任何整型/无符号整型操作，||，&amp;&amp;以及if，while</li>
+<li>操作数限制：10</li>
+<li>分值：2</li>
+<li>使用样例：float_neg(0) = 0x80000000</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">unsigned</span> <span class="nx">float_neg</span><span class="p">(</span><span class="nx">unsigned</span> <span class="nx">uf</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">unsigned</span> <span class="nx">temp</span><span class="p">;</span>
+  <span class="c1">//最高位取反</span>
+  <span class="nx">temp</span> <span class="o">=</span> <span class="nx">uf</span> <span class="o">^</span> <span class="mh">0x80000000</span><span class="p">;</span>
+  <span class="c1">//E全为1。这时，如果有效数字M全为0，表示±无穷大（正负取决于符号位s）；</span>
+  <span class="c1">//如果有效数字M不全为0，表示这个数不是一个数（NaN），符号位无关紧要。</span>
+  <span class="c1">//最高位清零</span>
+  <span class="kr">int</span> <span class="nx">t</span> <span class="o">=</span> <span class="nx">uf</span> <span class="o">&amp;</span> <span class="mh">0x7fffffff</span><span class="p">;</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">t</span> <span class="o">&gt;</span> <span class="mh">0x7f800000</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nx">uf</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">temp</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="float-i2f-x:f6cdf44a038c2d7cebd9122295ca2169">float_i2f(x)</h3>
+
+<ul>
+<li>题目要求 ：实现(float)x，返回x对应浮点数的二进制表示形式</li>
+<li>允许操作：包括任何整型/无符号整型操作，||，&amp;&amp;以及if，while</li>
+<li>操作数限制：30</li>
+<li>分值：4</li>
+<li>使用样例：float_i2f(0x800000) = 0x4b000000</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">unsigned</span> <span class="nx">float_i2f</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">unsigned</span> <span class="nx">s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">exp</span> <span class="o">=</span> <span class="mi">31</span><span class="p">,</span> <span class="nx">frac</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">==</span> <span class="mh">0x00000000</span><span class="nx">u</span><span class="p">)</span> <span class="k">return</span> <span class="mh">0x00000000</span><span class="nx">u</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&amp;</span> <span class="mh">0x80000000</span><span class="nx">u</span><span class="p">)</span> <span class="p">{</span> <span class="nx">s</span> <span class="o">=</span> <span class="mh">0x80000000</span><span class="nx">u</span><span class="p">;</span> <span class="nx">x</span> <span class="o">=</span> <span class="o">-</span><span class="nx">x</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&amp;</span> <span class="mh">0x80000000</span><span class="nx">u</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span>
+    <span class="c1">//exp记录最高位的位置</span>
+    <span class="nx">exp</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">x</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="c1">//最后舍掉的8位若最高位为1且低七位仍有数，要进位</span>
+  <span class="k">if</span> <span class="p">((</span><span class="nx">x</span> <span class="o">&amp;</span> <span class="mh">0x000001ff</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x180</span><span class="p">)</span> <span class="nx">d</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="nx">x</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="nx">d</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="c1">//franc记录尾数</span>
+  <span class="nx">frac</span> <span class="o">=</span> <span class="p">((</span><span class="nx">x</span> <span class="o">&amp;</span> <span class="mh">0x7fffffff</span><span class="nx">u</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="nx">d</span><span class="p">;</span>
+  
+  <span class="k">return</span> <span class="nx">s</span> <span class="o">+</span> <span class="p">((</span><span class="nx">exp</span> <span class="o">+</span> <span class="mi">127</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">23</span><span class="p">)</span> <span class="o">+</span> <span class="nx">frac</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h3 id="float-twice-uf:f6cdf44a038c2d7cebd9122295ca2169">float_twice(uf)</h3>
+
+<ul>
+<li>题目要求 ：返回以unsinged表示的浮点数二倍的二进制形式</li>
+<li>允许操作：包括任何整型/无符号整型操作，||，&amp;&amp;以及if，while</li>
+<li>操作数限制：30</li>
+<li>分值：4</li>
+<li>使用样例：float_twice(0x7f800000) = 0x7f800000</li>
+</ul>
+
+<p><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">unsigned</span> <span class="nx">float_twice</span><span class="p">(</span><span class="nx">unsigned</span> <span class="nx">uf</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// 若是指数为0情况</span>
+  <span class="k">if</span><span class="p">((</span><span class="nx">uf</span> <span class="o">&amp;</span> <span class="mh">0x7F800000</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nx">uf</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mh">0x80000000</span> <span class="o">&amp;</span> <span class="nx">uf</span><span class="p">);</span><span class="c1">//特殊情况0x80000000</span>
+  <span class="c1">//若数为NaN</span>
+  <span class="k">else</span> <span class="k">if</span><span class="p">((</span><span class="nx">uf</span> <span class="o">&amp;</span> <span class="mh">0x7fffffff</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mh">0x7f800000</span><span class="p">)</span>
+  <span class="c1">//else if ((f &amp; 0x7F800000) != 0x7F800000)</span>
+    <span class="k">return</span> <span class="nx">uf</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">uf</span> <span class="o">+</span> <span class="mh">0x00800000</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</p>
+
+<h2 id="总结:f6cdf44a038c2d7cebd9122295ca2169">总结</h2>
+
+<p>本次DataLab在种种运算符限制下实现了一些基本操作，相信做完的你对数据的理解又加深啦~</p>
+
+  </section>
+</article>
+
+</main>
+
+
+</div>
+
+<footer>
+  <div class="container">
+    <span class="copyright">&copy; 2017  Elegenthus&#39;s blog - <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
+
