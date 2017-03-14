@@ -246,7 +246,7 @@
 <li>使用样例：logicalShift(0x87654321,4) = 0x08765432</li>
 </ul>
 
-<p>此题思路为将x右移n位后，清零高4位。</p>
+<p>此题思路为将x右移n位后，清零高n位。</p>
 
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="kr">int</span> <span class="nx">logicalShift</span><span class="p">(</span><span class="kr">int</span> <span class="nx">x</span><span class="p">,</span> <span class="kr">int</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="p">(</span><span class="nx">x</span><span class="o">&gt;&gt;</span><span class="nx">n</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="o">~</span><span class="p">((</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="mi">31</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="nx">n</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">));</span>
