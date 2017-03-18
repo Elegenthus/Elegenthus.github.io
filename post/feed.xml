@@ -304,7 +304,7 @@
 &lt;li&gt;允许操作：! ~ &amp;amp; ^ | + &amp;lt;&amp;lt; &amp;gt;&amp;gt;&lt;/li&gt;
 &lt;li&gt;操作数限制：4&lt;/li&gt;
 &lt;li&gt;分值：1&lt;/li&gt;
-&lt;li&gt;使用样例：tmin() = 0x10000000&lt;/li&gt;
+&lt;li&gt;使用样例：tmin() = 0x80000000&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;此题考查补码所能表示的最小数。&lt;/p&gt;
