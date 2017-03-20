@@ -418,7 +418,7 @@ ps：&lt;/p&gt;
 
 &lt;p&gt;返回1的情况有两种：&lt;br&gt;
 ①x为负数而y为正数 &lt;br&gt;
-②x、y符号相同且 y-x &amp;lt;= 0&lt;/p&gt;
+②x、y符号相同且 x-y &amp;lt;= 0&lt;/p&gt;
 
 &lt;p&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;kr&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;isLessOrEqual&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kr&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kr&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
   &lt;span class=&#34;c1&#34;&gt;//y-x&lt;/span&gt;
