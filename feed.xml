@@ -6,8 +6,238 @@
     <description>Recent content on Elegenthus&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 13 Mar 2017 22:14:14 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 15 Jul 2017 15:57:22 +0800</lastBuildDate>
     <atom:link href="https://Elegenthus.github.io/feed/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>桂声前端部署踩坑之旅</title>
+      <link>https://elegenthus.github.io/post/deploy/</link>
+      <pubDate>Sat, 15 Jul 2017 15:57:22 +0800</pubDate>
+      
+      <guid>https://elegenthus.github.io/post/deploy/</guid>
+      <description>
+
+&lt;p&gt;这两天试着将&lt;a href=&#34;https://github.com/hdgs/guisheng_fe&#34;&gt;华大桂声的前端代码&lt;/a&gt;部署到服务器上，短短几句代码居然历时两天，谨以此文记录两天以来踩的大大小小的坑。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&#34;本地构建镜像:0814af543608f4fd171b2e9cf43d9917&#34;&gt;本地构建镜像&lt;/h2&gt;
+
+&lt;p&gt;在将node应用部署到服务器上之前，首先在本地尝试构建docker镜像，这主要是为了检查部署代码是否存在问题&lt;/p&gt;
+
+&lt;h3 id=&#34;1-1-安装docker:0814af543608f4fd171b2e9cf43d9917&#34;&gt;1.1 安装docker&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://brew.sh&#34;&gt;Homebrew&lt;/a&gt; 的 &lt;a href=&#34;https://caskroom.github.io&#34;&gt;Cask&lt;/a&gt; 已经支持 Docker for Mac，因此可以很方便的使用 Homebrew Cask 来进行安装：
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;brew&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;cask&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;install&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;docker&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;1-2-创建node应用:0814af543608f4fd171b2e9cf43d9917&#34;&gt;1.2 创建node应用&lt;/h3&gt;
+
+&lt;h4 id=&#34;1-2-1-package-json:0814af543608f4fd171b2e9cf43d9917&#34;&gt;1.2.1 package.json&lt;/h4&gt;
+
+&lt;p&gt;在项目根目录下创建&lt;code&gt;server&lt;/code&gt;文件夹，接着在&lt;code&gt;server&lt;/code&gt;目录下创建&lt;code&gt;package.json&lt;/code&gt;，以定义node应用中所需要的各种模块以及相关的配置信息，可用&lt;code&gt;npm init&lt;/code&gt;进行交互式问答生成，这里给出其中部分信息
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-JSON&#34; data-lang=&#34;JSON&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+  &lt;span class=&#34;nt&#34;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;guisheng&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+  &lt;span class=&#34;nt&#34;&gt;&amp;quot;version&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;1.0.0&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+  &lt;span class=&#34;nt&#34;&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+  &lt;span class=&#34;nt&#34;&gt;&amp;quot;main&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;index.js&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+  &lt;span class=&#34;nt&#34;&gt;&amp;quot;scripts&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;quot;start&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;node index.js&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;quot;test&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;echo \&amp;quot;Error: no test specified\&amp;quot; &amp;amp;&amp;amp; exit 1&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;quot;build&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;rm -rf dist/* &amp;amp;&amp;amp; webpack --config webpack.build.config.js&amp;quot;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+  &lt;span class=&#34;err&#34;&gt;...&lt;/span&gt;
+  &lt;span class=&#34;nt&#34;&gt;&amp;quot;dependencies&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;quot;koa&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;^2.2.0&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;quot;koa-router&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;^7.2.0&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;quot;koa-send&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;^4.1.0&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;quot;koa-useragent&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;^1.0.0&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;nt&#34;&gt;&amp;quot;swig&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;^1.4.2&amp;quot;&lt;/span&gt;
+  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;h4 id=&#34;1-2-2-node-js:0814af543608f4fd171b2e9cf43d9917&#34;&gt;1.2.2 node.js&lt;/h4&gt;
+
+&lt;p&gt;然后在node.js文件中实现View层（传统后端MVC中的View），主要负责渲染同步路由的模板。此处选用koa2作为Web框架，部分代码如下：&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;send&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;require&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;koa-send&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Koa&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;require&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;koa&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Router&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;require&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;koa-router&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;userAgent&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;require&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;koa-useragent&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;path&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;require&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;swig&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;require&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;swig&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;router&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Router&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;app&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Koa&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;//HTML文件位于../dist/template中&lt;/span&gt;
+&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;templateRoot&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;__dirname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;../dist/template&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;nx&#34;&gt;app&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;use&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;userAgent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+
+&lt;span class=&#34;nx&#34;&gt;router&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;userAgent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;template&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;swig&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;compileFile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;resolve&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;templateRoot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;index.html&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+        &lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;body&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;template&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;({})&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+
+&lt;span class=&#34;nx&#34;&gt;router&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;/profile/:id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;function&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+    &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;userAgent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;template&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;swig&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;compileFile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;resolve&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;templateRoot&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;profile.html&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+        &lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;body&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;template&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;({})&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+
+&lt;span class=&#34;c1&#34;&gt;//将../dist下的文件放到/static/中&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;router&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;sr&#34;&gt;/^\/static(?:\/|$)/&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;async&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;kd&#34;&gt;let&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;filePath&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;replace&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;sr&#34;&gt;/static\//&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+     &lt;span class=&#34;nx&#34;&gt;await&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;send&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;filePath&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+         &lt;span class=&#34;nx&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;__dirname&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;quot;../dist&amp;quot;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+     &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;})&lt;/span&gt;
+
+&lt;span class=&#34;nx&#34;&gt;app&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;use&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;router&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;routes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;())&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;use&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;router&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;allowedMethods&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;());&lt;/span&gt;
+
+&lt;span class=&#34;nx&#34;&gt;app&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;listen&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3000&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;listening on port 3000&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h4 id=&#34;1-2-3-dockerfile:0814af543608f4fd171b2e9cf43d9917&#34;&gt;1.2.3 Dockerfile&lt;/h4&gt;
+
+&lt;p&gt;一份Dockerfile文件可以帮助我们构建部署镜像，因此我们需要在项目根目录下创建一个Dockerfile文件&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-Dockerfile&#34; data-lang=&#34;Dockerfile&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; node:latest&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;# Create app directory&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;RUN&lt;/span&gt; mkdir -p /usr/src/app
+&lt;span class=&#34;k&#34;&gt;WORKDIR&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; /usr/src/app&lt;/span&gt;
+COPY . /usr/src/app
+
+&lt;span class=&#34;c&#34;&gt;# Build static file&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;RUN&lt;/span&gt; npm install --registry&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;https://registry.npm.taobao.org
+&lt;span class=&#34;k&#34;&gt;RUN&lt;/span&gt; npm run build
+
+&lt;span class=&#34;k&#34;&gt;WORKDIR&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; /usr/src/app/server&lt;/span&gt;
+
+&lt;span class=&#34;c&#34;&gt;# Build server file&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;RUN&lt;/span&gt; npm install --registry&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;https://registry.npm.taobao.org
+
+&lt;span class=&#34;c&#34;&gt;# Bundle app source&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;EXPOSE&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; 3000&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;CMD&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; [ &amp;quot;npm&amp;quot;, &amp;quot;start&amp;quot; ]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Dockerfile的具体的写法可以参考官方文档。此处的Dockerfile的作用主要是，构建了静态文件，然后启动了node服务进程。&lt;/p&gt;
+
+&lt;h3 id=&#34;1-3-创建镜像:0814af543608f4fd171b2e9cf43d9917&#34;&gt;1.3 创建镜像&lt;/h3&gt;
+
+&lt;p&gt;通过运行下面👇这条指令，创建一个名为&lt;code&gt;name/application&lt;/code&gt;的镜像，可以根据需要修改&lt;code&gt;name/application&lt;/code&gt;，但是不要忘记后面的&lt;code&gt;.&lt;/code&gt;，它表明根据当前目录下的Dockerfile构建镜像
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;docker&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;build&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;t&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;application&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+如果最后看到&lt;code&gt;successful&lt;/code&gt;的提示，那就代表镜像构建成功，可以进行下一步啦&lt;/p&gt;
+
+&lt;h4 id=&#34;ps-可能失败原因如下:0814af543608f4fd171b2e9cf43d9917&#34;&gt;ps：可能失败原因如下：&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;网络故障，那么可以等网好一点再试一次&lt;/li&gt;
+&lt;li&gt;代码错误，此时则注意看报错信息，根据报错信息修改&lt;/li&gt;
+&lt;li&gt;Docker版本太低，先使用&lt;code&gt;docker -v&lt;/code&gt;查看版本，根据需要升级Docker版本&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;1-4-部署测试应用:0814af543608f4fd171b2e9cf43d9917&#34;&gt;1.4 部署测试应用&lt;/h3&gt;
+
+&lt;p&gt;现在一切就绪，在本地运行镜像试试看，此处我继续选择将镜像映射到3000端口
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;docker&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;run&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3000&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3000&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;application&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+之后可以从使用 &lt;code&gt;curl&lt;/code&gt; 输出页面上的数据，本地测试成功后我们就可以将应用部署到服务器上了。&lt;/p&gt;
+
+&lt;h2 id=&#34;在阿里云镜像仓库build镜像:0814af543608f4fd171b2e9cf43d9917&#34;&gt;在阿里云镜像仓库Build镜像&lt;/h2&gt;
+
+&lt;p&gt;在直接登录服务器使用Docker Build镜像时，在因为网络问题失败N次之后，高人指点我去阿里云镜像仓库Build镜像。&lt;/p&gt;
+
+&lt;p&gt;为了方便ECS用户使用Docker官方镜像，阿里云同步Docker官方镜像库的最新版本到国内服务器，使得ECS用户可以通过内网连接该服务器。&lt;/p&gt;
+
+&lt;p&gt;在登录阿里云账号后，进入管理控制台，找到容器仓库中的镜像，进入镜像仓库控制台，创建镜像仓库，根据提示一步一步创建namespace等，配置的时候选择关联github，这样以后每次我们推送代码至github，阿里云就会自动帮我们构建镜像了。然后开始管理自己刚刚创建的镜像，进入构建页面立即构建，接着就可以在构建日志中查看构建状态了。&lt;/p&gt;
+
+&lt;h4 id=&#34;ps-可能存在的坑:0814af543608f4fd171b2e9cf43d9917&#34;&gt;ps：可能存在的坑&lt;/h4&gt;
+
+&lt;p&gt;如果一次构建失败了，查看日志寻找错误，然后重推一次代码到github，重新构建一般就能成功。&lt;/p&gt;
+
+&lt;h2 id=&#34;进入服务器部署:0814af543608f4fd171b2e9cf43d9917&#34;&gt;进入服务器部署&lt;/h2&gt;
+
+&lt;p&gt;然后就可以登录服务器部署了。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-1-clone仓库:0814af543608f4fd171b2e9cf43d9917&#34;&gt;3.1 clone仓库&lt;/h3&gt;
+
+&lt;p&gt;在登录服务器后，从github上将项目clone至服务器上，接下来可以按照镜像仓库里的操作指南进行&lt;/p&gt;
+
+&lt;p&gt;在服务器上登录阿里云docker registry
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;docker&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;login&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;--&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;username&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;你的账号名&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;registry&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;cn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;shenzhen&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;aliyuncs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;com&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+登录registry的用户名是你的阿里云账号全名，密码是你开通namespace时设置的密码。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-2-从registry中拉取镜像:0814af543608f4fd171b2e9cf43d9917&#34;&gt;3.2 从registry中拉取镜像：&lt;/h3&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sudo&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;docker&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;pull&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;registry&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;cn&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;shenzhen&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;aliyuncs&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;com&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;仓库名称&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;镜像版本号&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+这里的镜像版本号如果没有使用tag指明，一般就是&lt;code&gt;latest&lt;/code&gt;，也可以在构建日志中查看得知。&lt;/p&gt;
+
+&lt;h3 id=&#34;3-3-查看镜像号:0814af543608f4fd171b2e9cf43d9917&#34;&gt;3.3 查看镜像号&lt;/h3&gt;
+
+&lt;p&gt;拉取镜像后，查看新拉取的镜像号
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;docker&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;images&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;3-4-运行镜像:0814af543608f4fd171b2e9cf43d9917&#34;&gt;3.4 运行镜像&lt;/h3&gt;
+
+&lt;p&gt;然后运行镜像，根据需要选择映射的端口号，此处我仍映射在3000端口
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;docker&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;run&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3000&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3000&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;d&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;镜像号&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;成功后就可以在浏览器上通过&lt;code&gt;http://[SERVER_IP]:3000&lt;/code&gt;访问你所部署的应用啦&lt;/p&gt;
+
+&lt;h4 id=&#34;ps-可能遇到的坑:0814af543608f4fd171b2e9cf43d9917&#34;&gt;ps: 可能遇到的坑：&lt;/h4&gt;
+
+&lt;p&gt;有的时候会需要修改代码重新构建镜像，在将镜像pull下来之后，应先停掉原来运行的容器&lt;/p&gt;
+
+&lt;h5 id=&#34;①-查看容器号:0814af543608f4fd171b2e9cf43d9917&#34;&gt;① 查看容器号&lt;/h5&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;docker&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ps&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;h5 id=&#34;②-停止容器:0814af543608f4fd171b2e9cf43d9917&#34;&gt;② 停止容器&lt;/h5&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span&gt;&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;docker&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;stop&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;容器号&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;然后继续运行镜像就可以啦&lt;/p&gt;
+
+&lt;h2 id=&#34;总结:0814af543608f4fd171b2e9cf43d9917&#34;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;到这里桂生前端部署初尝试就结束啦，记录下来希望能对大家也有所裨益。&lt;/p&gt;
+
+&lt;h1 id=&#34;参考文献:0814af543608f4fd171b2e9cf43d9917&#34;&gt;参考文献&lt;/h1&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://zxc0328.github.io/2017/06/05/fe-microservice/&#34;&gt;前端微服务实践-以木犀通行证为例&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.vultr.com/docs/deploy-a-node-js-application-using-docker&#34;&gt;Deploy a Node.js Application Using Docker&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://yeasy.gitbooks.io/docker_practice/content/install/mac.html&#34;&gt;macOS 操作系统安装 Docker&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>Manipulating Bits</title>
